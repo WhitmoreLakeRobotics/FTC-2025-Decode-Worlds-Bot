@@ -4,7 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @Disabled
-public class AutoAim {
+public class AutoAim extends BaseHardware{ // naj added this to comply with standard baseHardware class
 
     private final Limey limey;
     private final Turret turret;
@@ -13,6 +13,13 @@ public class AutoAim {
     // Distance behind the tag to aim at
     private static final double OFFSET_INCHES = 8.0;          // MJD
     private static final double OFFSET = OFFSET_INCHES * 0.0254; // meters // MJD
+
+    @Override // naj added this to comply with standard baseHardware class
+    public void init() {}
+    public void init_loop() {}
+    public void start() {}
+    public void stop() {}
+    public void loop() {}
 
     public AutoAim(Limey limey, Turret turret, DriveTrain driveTrain) {
         this.limey = limey;
