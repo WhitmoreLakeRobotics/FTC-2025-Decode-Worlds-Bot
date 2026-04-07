@@ -23,11 +23,11 @@ public class Limey extends BaseHardware {
     private int tagID = -1;
 
     // store tag pose in camera space for AutoAim
-    private double tagXCam = 0;   // MJD
-    private double tagYCam = 0;   // MJD
-    private double tagZCam = 0;   // MJD
+    private double tagXCam = 0;
+    private double tagYCam = 0;
+    private double tagZCam = 0;
 
-    // camera pose in robot space (in meters)
+    // camera pose in robot space (in meters)  needs updating
     private static final double CAM_X_ROBOT = 0.0;
     private static final double CAM_Y_ROBOT = 0.0;
     private static final double CAM_Z_ROBOT = 13.5 * 0.0254;
@@ -37,7 +37,8 @@ public class Limey extends BaseHardware {
 
     private double robotFieldX = Double.NaN;
     private double robotFieldY = Double.NaN;
-    private double robotFieldHeadingDeg = Double.NaN;
+
+    private double cameraFieldHeadingDeg = Double.NaN;   // MJD (renamed from robotFieldHeadingDeg)
 
     @Override
     public void init() {
@@ -75,9 +76,9 @@ public class Limey extends BaseHardware {
                 tagDistance = pose.getPosition().z;
                 tagAngle = pose.getOrientation().getYaw();
 
-                tagXCam = x;
-                tagYCam = y;
-                tagZCam = z;
+                tagXCam = x;   // MJD
+                tagYCam = y;   // MJD
+                tagZCam = z;   // MJD
 
                 double fullDistance = Math.sqrt(x*x + y*y + z*z);
 
@@ -100,21 +101,19 @@ public class Limey extends BaseHardware {
                 telemetry.addData("Field Tag Heading", tagField.headingDeg);
             }
 
-            // ROBOT FIELD POSE FROM BOTPOSE
+            // CAMERA FIELD POSE FROM BOTPOSE — NOT ROBOT POSE // MJD
             Pose3D botPose = result.getBotpose();
             if (botPose != null) {
 
                 robotFieldX = botPose.getPosition().x;
                 robotFieldY = botPose.getPosition().y;
 
-                robotFieldHeadingDeg = -botPose.getOrientation().getYaw();   // MJD
-
-                // Normalize heading — MJD
-                robotFieldHeadingDeg = ((robotFieldHeadingDeg % 360) + 360) % 360;
+                cameraFieldHeadingDeg = -botPose.getOrientation().getYaw();   // MJD
+                cameraFieldHeadingDeg = ((cameraFieldHeadingDeg % 360) + 360) % 360;   // MJD
 
                 telemetry.addData("BotPose X", robotFieldX);
                 telemetry.addData("BotPose Y", robotFieldY);
-                telemetry.addData("BotPose Heading", robotFieldHeadingDeg);
+                telemetry.addData("Camera Heading", cameraFieldHeadingDeg);   // MJD
             }
 
             telemetry.addData("Limelight", "VALID TARGET");
@@ -125,15 +124,8 @@ public class Limey extends BaseHardware {
             telemetry.addData("Yaw", "%.2f°", tagAngle);
             telemetry.addData("Latency", "%.1f ms", result.getTargetingLatency());
 
-           // telemetry.addData("HeadingTRAP",TrapezoidAutoAim.heading);
-            //telemetry.addData("TrapezoidState",TrapezoidAutoAim.CurrentMode);
-
         } else {
             tagID = -1;
-
-            // robotFieldX = Double.NaN;        // MJD FIX REMOVED
-            // robotFieldY = Double.NaN;        // MJD FIX REMOVED
-            // robotFieldHeadingDeg = Double.NaN; // MJD FIX REMOVED
 
             telemetry.addData("Limelight", "NO TARGET");
         }
@@ -143,6 +135,19 @@ public class Limey extends BaseHardware {
     void stop() {}
 
     public void method(){}
+
+    // --- CAMERA-SPACE TAG POSE (X,Y,Z) --- // MJD
+    public double[] getTagPoseCameraSpace3D() {   // MJD
+        if (tagID == -1) return null;            // MJD
+        return new double[]{ tagXCam, tagYCam, tagZCam };   // MJD
+    }
+
+    // --- CAMERA-SPACE TAG YAW (degrees) --- // MJD
+    public double getTagYawCameraSpaceDeg() {     // MJD
+        if (tagID == -1) return Double.NaN;      // MJD
+        return tagAngle;                         // MJD
+    }
+
 
     // Returns: [x, y, z, roll, pitch, yaw]
     public double[] getBotPose() {
@@ -214,9 +219,9 @@ public class Limey extends BaseHardware {
         };
     }
 
-    // robot pose in field space getter
+    // Returns CAMERA pose in field space — NOT robot pose // MJD
     public double[] getRobotPoseFieldSpace() {
-        return new double[]{ robotFieldX, robotFieldY, robotFieldHeadingDeg };
+        return new double[]{ robotFieldX, robotFieldY, cameraFieldHeadingDeg };   // MJD
     }
 
     public double getTx() { return tx; }
