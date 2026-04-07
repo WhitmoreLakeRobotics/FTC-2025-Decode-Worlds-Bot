@@ -13,6 +13,7 @@ public class Intake extends BaseHardware {
     private Lighting lighting;
     private Sensors sensors;
     private LauncherBlocker launcherBlocker;
+    private Robot robot;
 
     private DcMotorEx NTKM01;
 
@@ -50,9 +51,10 @@ public class Intake extends BaseHardware {
 
     public void loop() {
 
-        if(sensors.bothFilled && !launcherBlocker.AtUnBlocked){
-            cmdStop();
-        }
+       if(IntakeFull && !robot.launcherBlocker.AtUnBlocked){
+           cmdStop();
+           robot.transitionRoller.cmdStop();
+       }
 
     }
 
