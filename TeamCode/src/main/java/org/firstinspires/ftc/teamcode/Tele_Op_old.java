@@ -1,6 +1,7 @@
 //package org.firstinspires.ftc.robotcontroller.external.samples;
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -10,16 +11,14 @@ import org.firstinspires.ftc.teamcode.Common.CommonLogic;
 import org.firstinspires.ftc.teamcode.Common.Settings;
 
 import org.firstinspires.ftc.teamcode.Hardware.AutoRPM;
-import org.firstinspires.ftc.teamcode.Hardware.DriveTrain;
 import org.firstinspires.ftc.teamcode.Hardware.Lighting;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
-import org.firstinspires.ftc.teamcode.Hardware.AutoAim;
 import org.firstinspires.ftc.teamcode.Hardware.TrapezoidAutoAim;
 import org.firstinspires.ftc.teamcode.pedroPathing.SystemX;
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "Tele_Op", group = "TeleOp")
-//@Disabled
-public class Tele_Op extends OpMode {
+@Disabled
+public class Tele_Op_old extends OpMode {
     private static final String TAGTeleop = "8492-Teleop";
     //RobotTest robot = new RobotTest();
     Robot robot = new Robot();
@@ -119,25 +118,7 @@ public class Tele_Op extends OpMode {
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
 
-        if(TestAuton.Alliance == "Red"){
-            CurrentAlliance = Alliance.Red;
-        } else if(TestAuton.Alliance == "Blue"){
-            CurrentAlliance = Alliance.Blue;
-        }else if(TestAuton.Alliance == "Unknown"){
-            CurrentAlliance = Alliance.Unknown;
-        }else{
-            CurrentAlliance = Alliance.NoAuto;
-        }
 
-        if(SystemX.Alliance == "Red"){
-            CurrentAlliance = Alliance.Red;
-        } else if(SystemX.Alliance == "Blue"){
-            CurrentAlliance = Alliance.Blue;
-        }else if(SystemX.Alliance == "Unknown"){
-            CurrentAlliance = Alliance.Unknown;
-        }else{
-            CurrentAlliance = Alliance.NoAuto;
-        }
 
     }
 
@@ -187,25 +168,7 @@ public class Tele_Op extends OpMode {
         //robot.signalSign.doUP();
         //robot.swing_arm_and_lift.SetPOS(Swing_Arm_And_Lift.Mode.PICKUP);
 
-        if(CurrentAlliance == Alliance.Red){
-            //robot.lighting.cmdREDa();
-            robot.lighting.CurrentTeam = Lighting.Team.RED;
-            robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Red;
-        }else if(CurrentAlliance == Alliance.Blue){
-           // robot.lighting.cmdBLUEa();
-            robot.lighting.CurrentTeam = Lighting.Team.BLUE;
-            robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Blue;
-        }else if(CurrentAlliance == Alliance.Unknown){
-           // robot.lighting.cmdPURPLEa();
-            robot.lighting.CurrentTeam = Lighting.Team.UNKNOWN;
-            robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Unknown;
-        }else if(CurrentAlliance == Alliance.NoAuto){
-           // robot.lighting.cmdYELLOWa();
-            robot.lighting.CurrentTeam = Lighting.Team.UNKNOWN;
-            robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.NoAuto;
-        }else{
 
-        }
 
     }
 
@@ -506,7 +469,7 @@ public class Tele_Op extends OpMode {
         if (CommonLogic.oneShot(gamepad1.dpad_up, gp1_prev_dpad_up)) {
             if(uppiesInhibitor.seconds() >= 100 || UppiesOverrideEnabled){
                 robot.uppies.cmdUp();
-                robot.lighting.cmdYELLOWl();
+             //   robot.lighting.cmdYELLOWl();
             }
 
         }
@@ -521,7 +484,7 @@ public class Tele_Op extends OpMode {
         if (CommonLogic.oneShot(gamepad1.dpad_down, gp1_prev_dpad_down)) {
             if(uppiesInhibitor.seconds() >= 100 || UppiesOverrideEnabled){
                 robot.uppies.cmdDown();
-                robot.lighting.cmdOFFl();
+              //  robot.lighting.cmdOFFl();
             }
 
         }
