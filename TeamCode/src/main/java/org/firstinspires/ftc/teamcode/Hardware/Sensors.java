@@ -29,8 +29,7 @@ public class Sensors extends BaseHardware {
 public RevColorSensorV3 NTKAP3;
     public ColorRangeSensor NTKAP1;
     public ColorRangeSensor NTKAP2;
-   // public ColorRangeSensor NTKAP3;
-   // public ColorRangeSensor Plate;
+    public ColorRangeSensor Plate;
     public boolean bothFilled = false;
     private boolean sensorStable = false;
     //private Mode CurrentMode = Mode.STOP;
@@ -39,7 +38,8 @@ public RevColorSensorV3 NTKAP3;
     private int SensorRed;
     private int SensorGreen;
 
-    private boolean bNTKAP1detect = false;
+   // private boolean bNTKAP1detect = false;
+    public Distance1 CurrentDistance1 = Distance1.MISSING1;
     public Distance2 CurrentDistance2 = Distance2.MISSING2;
     public Distance3 CurrentDistance3 = Distance3.MISSING3;
     public TargetType CurrentTargetType = TargetType.UNKNOWNT;
@@ -78,7 +78,7 @@ public RevColorSensorV3 NTKAP3;
         NTKAP3 = hardwareMap.get(RevColorSensorV3.class, "NTKAP3");
         NTKAP2 = hardwareMap.get(ColorRangeSensor.class, "NTKAP2");
         NTKAP1 = hardwareMap.get(RevColorSensorV3.class, "NTKAP1");
-       // Plate = hardwareMap.get(RevColorSensorV3.class,"Plate");
+        Plate = hardwareMap.get(RevColorSensorV3.class,"Plate");
         sensorTime.reset();
 
     }
@@ -106,9 +106,10 @@ public RevColorSensorV3 NTKAP3;
         int red4 = NTKC01.red();
         int green4 = NTKC01.green();
         int blue4 = NTKC01.blue();
+
 */
 
-
+            cmdPlate();
 
 
         /**
@@ -129,6 +130,7 @@ public RevColorSensorV3 NTKAP3;
      * Example usage: Starting another thread.
      */
     public void start(){
+       // cmdPlate();
 
     }
 
@@ -138,6 +140,7 @@ public RevColorSensorV3 NTKAP3;
      * This method will be called repeatedly in a loop while this op mode is running
      */
     public void loop(){
+        //cmdPlate();
 
         if(sensorTime.milliseconds() >= 1000){
             sensorStable = true;
@@ -153,13 +156,21 @@ public RevColorSensorV3 NTKAP3;
         getDistNTKAP1();
         getDistNTKAP2();
         getDistNTKAP3();
-
+/*
         if (NTKAP1distance <= targRange && sensorStable) {
         bNTKAP1detect = true;
         } else {
             bNTKAP1detect = false;
         }
 
+ */
+
+        if (NTKAP1distance <= targRange && sensorStable) {
+            CurrentDistance1 = Distance1.FILLED1;
+            //cmdBLUE(); // MJD: LED feedback for sensor 2 seeing object
+        } else {
+            CurrentDistance1 = Distance1.MISSING1;
+        }
 
         if (NTKAP2distance <= targRange && sensorStable) {
             CurrentDistance2 = Distance2.FILLED2;
@@ -182,9 +193,10 @@ public RevColorSensorV3 NTKAP3;
         // STOP CONDITION
         //if (CurrentMode == Intake.Mode.NTKforward) {
 
-                    if(CurrentDistance2 == Distance2.FILLED2 &&
-                            CurrentDistance3 == Distance3.FILLED3 &&
-                        bNTKAP1detect){
+                    if(     CurrentDistance1 == Distance1.FILLED1 &&
+                            CurrentDistance2 == Distance2.FILLED2 &&
+                            CurrentDistance3 == Distance3.FILLED3   //  && bNTKAP1detect
+                    ){
                         bothFilled = true;
                     }
 
@@ -240,7 +252,7 @@ public void stop(){
 
 }
 
-public TargetType cmdPlate(RevColorSensorV3 NTKAP1){
+public void cmdPlate(){
     int red1 = NTKAP1.red();
     int green1 = NTKAP1.green();
     int blue1 = NTKAP1.blue();
@@ -249,14 +261,14 @@ public TargetType cmdPlate(RevColorSensorV3 NTKAP1){
             &&(CommonLogic.inRange(blue1,TargetType.REDT.blue,TargetType.REDT.blueTol ))
             &&(CommonLogic.inRange(green1,TargetType.REDT.green,TargetType.REDT.greenTol))
     ){
-        return TargetType.REDT;
+        CurrentTargetType = TargetType.REDT;
     }else if ((CommonLogic.inRange(red1,TargetType.BLUET.red,TargetType.BLUET.redTol ))
             &&(CommonLogic.inRange(blue1,TargetType.BLUET.blue,TargetType.BLUET.blueTol ))
             &&(CommonLogic.inRange(green1,TargetType.BLUET.green,TargetType.BLUET.greenTol))
     ){
-        return TargetType.BLUET;
+        CurrentTargetType = TargetType.BLUET;
     }else {
-        return TargetType.UNKNOWNT;
+        CurrentTargetType = TargetType.UNKNOWNT;
     }
 }
 
@@ -294,12 +306,7 @@ public TargetType getSlotArtifact(ColorSensor v3) {
 
     public enum Distance3 { FILLED3, MISSING3 }
     public enum Distance2 { FILLED2, MISSING2 }
-
-
-
-
-
-
+    public enum Distance1 { FILLED1, MISSING1 }
 
 //public enum Mode{ STOP }
 

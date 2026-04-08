@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
+import org.firstinspires.ftc.teamcode.Hardware.Sensors;
 import org.firstinspires.ftc.teamcode.Hardware.TrapezoidAutoAim;
 
 @Disabled
@@ -28,6 +29,7 @@ public class SystemX extends OpMode {
     public String choosenAuton = "None";
     private TelemetryManager telemetryMU;
     public stage currentStage = stage._00_unknown;
+    public Auto CurrentAuto = Auto.Unknown;
     private ElapsedTime runtime = new ElapsedTime();
     private boolean Auton = false;
     public boolean intakeFull = false;
@@ -37,6 +39,7 @@ public class SystemX extends OpMode {
     public boolean goToFarLaunch = false;
     public boolean goToPickTunnel = false;
     public boolean main = false;
+    public boolean readyLoop = false;
 
     public static String Alliance;
 
@@ -238,15 +241,24 @@ public class SystemX extends OpMode {
         robot.hardwareMap = hardwareMap;
         robot.telemetry = telemetry;
         robot.init();
+        readyLoop = true;
     }
 
 
     @Override
     public void init_loop() {
         //super.init_loop();
-
-
         robot.init_loop();
+        //robot.sensors.cmdPlate();
+        if(robot.sensors.CurrentTargetType == Sensors.TargetType.REDT){
+            Alliance = "Red";
+        }else if(robot.sensors.CurrentTargetType == Sensors.TargetType.BLUET){
+            Alliance = "Blue";
+        }else{
+            Alliance = "Unknown";
+        }
+
+        loop();
 
     }
 
@@ -254,6 +266,23 @@ public class SystemX extends OpMode {
     public void start () {
         //super.start();
         robot.start();
+        readyLoop = false;
+
+        if(CurrentAuto == Auto.RedFar){
+
+        }else if(CurrentAuto == Auto.RedNear){
+            ppNearRed6.start();
+            ppNearRed6.loop();
+        }else if(CurrentAuto == Auto.BlueFar){
+            pp6CycleBlueFar.start();
+            pp6CycleBlueFar.loop();
+            
+        }else if(CurrentAuto == Auto.BlueNear){
+
+        }else{
+
+        }
+
 
     }
 
@@ -268,19 +297,31 @@ public class SystemX extends OpMode {
         follower.update();
         switch (currentStage) {
             case _00_unknown:
+                if(readyLoop) {
                     currentStage = stage._07_AutoPos;
+                }
                 break;
 
             case _07_AutoPos:
-                if(robot.limey.getTagID() == 24){  //if red
-                    robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Red;
-                    findAlliance();
-                    currentStage = stage._RedFar;
+                if(robot.limey.getTagID() == 24 || robot.limey.getTagID() == 20){  //if red
 
-                }else if(robot.limey.getTagID() == 20){//if blue
-                    robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Blue;
-                    findAlliance();
-                    currentStage = stage._BlueFar;
+                    if(Alliance == "Red") {
+                        robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Red;
+                        //findAlliance();
+                        CurrentAuto = Auto.RedFar;
+                        currentStage = stage._RedFar;
+
+                    }else if(Alliance == "Blue") {
+                        //if blue
+
+                        robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Blue;
+                        // findAlliance();
+                        CurrentAuto = Auto.BlueFar;
+                        currentStage = stage._BlueFar;
+                    }else{
+                        robot.sensors.cmdPlate();
+                        currentStage = stage._07_AutoPos;
+                    }
                 }else {
                     //follower.followPath(checkColor,true);                   p
                     runtime.reset();
@@ -290,52 +331,64 @@ public class SystemX extends OpMode {
 
             case _08_AutoPos2:
                 //if(!follower.isBusy() || runtime.milliseconds() >= 1500) {                   p
-                   if(robot.limey.getTagID() == 24){  // use color senser
+                   if(Alliance == "Red"){  // use color senser
                        robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Red;
-                       findAlliance();
+                       //findAlliance();
                       // follower.setStartingPose(scoreCheckCorrect);                         p
                        //follower.followPath(correctPos,true);    // theory, NOT TESTED!!!
                    runtime.reset();                                     //if not working try correctPos2(less likely to work)
+                       CurrentAuto = Auto.BlueNear;
                     currentStage = stage._RedNear;                  // based on logical conclusion
-                }else if(robot.limey.getTagID() == 20) { // use color senser
+                }else if(Alliance == "Blue") { // use color senser
                        robot.trapezoidAutoAim.CurrentTurretColor = TrapezoidAutoAim.TurretColor.Blue;
-                       findAlliance();
+                       //findAlliance();
                        runtime.reset();
+                       CurrentAuto = Auto.BlueNear;
                        currentStage = stage._BlueNear;
+                   }else{
+                       currentStage = stage._08_AutoPos2;
                    }
               //  }                                 *w*           p
 
                 break;
                 
             case _RedFar:
-                choosenAuton = "Red Far";
-                //currentStage = stage._100_end;
+                if(readyLoop) {
+                    choosenAuton = "Red Far";
+                    //currentStage = stage._100_end;
+                }
                 
 
                 break;
 
             case _RedNear:
-                ppNearRed6.init();
-                choosenAuton = "Red Near";
-                currentStage = stage._RedNear2;
+                if(readyLoop) {
+                    ppNearRed6.init();
+                    ppNearRed6.init_loop();
+                    choosenAuton = "Red Near";
+                }
                 //currentStage = stage._100_end;
 
                 break;
 
             case _BlueFar:
-                pp6CycleBlueFar.init();
-                choosenAuton = "Blue Far";
-                currentStage = stage._BlueFar2;
+                if(readyLoop) {
+                    pp6CycleBlueFar.init();
+                    pp6CycleBlueFar.init_loop();
+                    choosenAuton = "Blue Far";
+                }
                 //currentStage = stage._100_end;
 
                 break;
 
             case _BlueNear:
-                choosenAuton = "Blue Near";
-                //currentStage = stage._100_end;
+                if(readyLoop) {
+                    choosenAuton = "Blue Near";
+                    //currentStage = stage._100_end;
+                }
 
                 break;
-
+/*
             case _RedFar2:
                 //choosenAuton = "Red Far";
                 //currentStage = stage._100_end;
@@ -429,7 +482,10 @@ public class SystemX extends OpMode {
 
                 break;
 
+ */
+
             case _100_end:
+                readyLoop = false;
                 //if (!follower.isBusy()) {        p
                    // telemetryMU.addData("Drive Complete?", follower.isBusy());   p
                 //}           p
@@ -461,11 +517,30 @@ if(!Auton) {
             }
         }
 
+        if(CurrentAuto == Auto.RedFar){
 
+        }else if(CurrentAuto == Auto.RedNear){
+            if(ppNearRed6.End){
+                ppNearRed6.stop();
+                currentStage = stage._100_end;
+            }else {
+                ppNearRed6.loop();
+            }
+        }else if(CurrentAuto == Auto.BlueFar){
+            if(pp6CycleBlueFar.End){
+                pp6CycleBlueFar.stop();
+                currentStage = stage._100_end;
+            }else {
+                pp6CycleBlueFar.loop();
+            }
+
+        }else if(CurrentAuto == Auto.BlueNear){
+
+        }else{
 
         }
 
-
+        }
 
         @Override
         public void stop () {
@@ -510,6 +585,14 @@ if(!Auton) {
             _BlueFar4,
             _100_end;
 
+        }
+
+        public enum Auto{
+             Unknown,
+             RedNear,
+             BlueNear,
+             RedFar,
+             BlueFar
         }
 
         private void dolaunch_process(){

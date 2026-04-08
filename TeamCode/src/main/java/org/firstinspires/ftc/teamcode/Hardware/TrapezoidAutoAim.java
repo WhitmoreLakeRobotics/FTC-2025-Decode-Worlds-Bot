@@ -106,9 +106,6 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                 } else {
                     // turret.cmdNo();   >:3
                     CurrentMode = Mode.Target_NotFound;
-
-
-
                 }
             }
             if (CurrentTurretColor == TurretColor.Blue) {

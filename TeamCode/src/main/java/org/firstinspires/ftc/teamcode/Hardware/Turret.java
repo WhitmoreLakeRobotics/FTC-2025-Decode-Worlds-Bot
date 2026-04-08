@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@Disabled
+
 public class Turret extends BaseHardware {
 
     public Telemetry telemetry = null;
@@ -81,6 +81,9 @@ public class Turret extends BaseHardware {
     public void init() {
         currentAngle = 0;
         targetAngle = 0;
+
+        leftyLoosy = hardwareMap.get(Servo.class,"leftyLoosy");
+        rightyTighty = hardwareMap.get(Servo.class,"rightyTighty");
     }
 
     @Override
