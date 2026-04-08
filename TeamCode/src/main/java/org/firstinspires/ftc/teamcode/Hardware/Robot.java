@@ -117,6 +117,9 @@ public class Robot extends BaseHardware {
         sensors.init();
 
         autoAim = new AutoAim(limey, turret, driveTrain);
+        autoAim.hardwareMap = this.hardwareMap;
+        autoAim.telemetry = this.telemetry;
+        autoAim.init();
 
         trapezoidAutoAim = new TrapezoidAutoAim();
         trapezoidAutoAim.hardwareMap = this.hardwareMap;
@@ -127,6 +130,7 @@ public class Robot extends BaseHardware {
     @Override
     public void init_loop() {
         driveTrain.init_loop();
+        autoAim.init_loop();
         //lighting.init_loop();
         // sensors.init_loop();
         sensors.init_loop();
@@ -156,6 +160,7 @@ public class Robot extends BaseHardware {
         uppies.start();
         autoRPM.start();
         turret.start();
+        autoAim.start();
         trapezoidAutoAim.start();
         lighting.start();
 
@@ -175,6 +180,7 @@ public class Robot extends BaseHardware {
         uppies.loop();
         autoRPM.loop();
         turret.loop();
+        autoAim.start();
         trapezoidAutoAim.loop();
         lighting.loop();
         setIntakeLighting(); //naj moved the code to this method to de-clutter the code
@@ -191,6 +197,7 @@ public class Robot extends BaseHardware {
         intake.loop();
         launcher.loop();
         launcherBlocker.loop();
+        autoAim.loop();
         transitionRoller.loop();
         limey.loop();
         uppies.loop();
@@ -215,6 +222,7 @@ public class Robot extends BaseHardware {
         uppies.stop();
         autoRPM.stop();
         turret.stop();
+        autoAim.stop();
         trapezoidAutoAim.stop();
         lighting.stop();
         // lighting.UpdateBaseColor(RevBlinkinLedDriver.BlinkinPattern.WHITE);

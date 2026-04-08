@@ -6,9 +6,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 @Disabled
 public class AutoAim extends BaseHardware{ // naj added this to comply with standard baseHardware class
 
-    private final Limey limey;
-    private final Turret turret;
-    private final DriveTrain driveTrain;
+    private Limey limey;
+    private Robot robot;
+    private Turret turret;
+    private DriveTrain driveTrain;
 
     // Distance behind the tag to aim at
     private static final double OFFSET_INCHES = 8.0;          // MJD
@@ -21,11 +22,11 @@ public class AutoAim extends BaseHardware{ // naj added this to comply with stan
     public void stop() {}
     public void loop() {}
 
-    public AutoAim(Limey limey, Turret turret, DriveTrain driveTrain) {
+   /* public AutoAim(Limey limey, Turret turret, DriveTrain driveTrain) {
         this.limey = limey;
         this.turret = turret;
         this.driveTrain = driveTrain;
-    }
+    } */
 
     /**
      * CAMERA-SPACE AUTO AIM
@@ -37,16 +38,16 @@ public class AutoAim extends BaseHardware{ // naj added this to comply with stan
     public double computeAimAngle() {   // MJD
 
         // Must see april tag
-        if (limey.getTagID() == -1) return Double.NaN;   // MJD
+        if (robot.limey.getTagID() == -1) return Double.NaN;   // MJD
 
-        double[] tagCam = limey.getTagPoseCameraSpace3D();   // MJD
+        double[] tagCam = robot.limey.getTagPoseCameraSpace3D();   // MJD
         if (tagCam == null || tagCam.length < 3) return Double.NaN;   // MJD
 
         double tagX = tagCam[0];   // camera X (right +)
         double tagY = tagCam[1];   // camera Y (down +)
         double tagZ = tagCam[2];   // camera Z (forward +)
 
-        double tagYawDeg = limey.getTagYawCameraSpaceDeg();   // MJD
+        double tagYawDeg = robot.limey.getTagYawCameraSpaceDeg();   // MJD
         if (Double.isNaN(tagYawDeg)) return Double.NaN;       // MJD
 
         double tagYawRad = Math.toRadians(tagYawDeg);         // MJD
@@ -67,7 +68,7 @@ public class AutoAim extends BaseHardware{ // naj added this to comply with stan
 
         turretTarget = ((turretTarget + 540) % 360) - 180;   // MJD
 
-        Telemetry t = limey.telemetry;
+        Telemetry t = robot.limey.telemetry;
         if (t != null) {
             t.addData("AA TagCamX", tagX);
             t.addData("AA TagCamY", tagY);

@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.Servo;
 
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.Autons.TestAuton;
-import org.firstinspires.ftc.teamcode.Common.CommonLogic;
-import org.firstinspires.ftc.teamcode.pedroPathing.ppTeleop;
-
-import java.util.MissingFormatWidthException;
-import java.util.Objects;
 
 
 public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply with standard baseHardware class

@@ -18,7 +18,7 @@ public class LauncherBlocker extends BaseHardware{
     /**
      * The {@link #telemetry} field contains an object in which a user may accumulate data which
      * is to be transmitted to the driver station. This data is automatically transmitted to the
-     * driver station on a regular, periodic basis.
+     * driver station on a regular, periodic basis. happy
      */
 
     public Servo LBS01;
