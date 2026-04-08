@@ -43,12 +43,13 @@ public class pp6CycleBlueFar extends OpMode {
     public static Pose currentPose  = new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(follower.getPose().getHeading()));
     public static Pose spikeB2start = new Pose (35,60,Math.toRadians(90));
     public static Pose spikeB2end = new Pose (15,60,Math.toRadians(90));
+    public static Pose CornerPickupPose = new Pose (8,9,Math.toRadians(180));
 
 
 
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
-    private PathChain cyclePickup1,spikeB2, interruptedPickup ;
+    private PathChain cyclePickup1,spikeB2, interruptedPickup, CornerPickup;
 
 
     public void buildPaths() {
@@ -73,6 +74,13 @@ public class pp6CycleBlueFar extends OpMode {
                 .setLinearHeadingInterpolation(currentPose.getHeading(), spikeB2start.getHeading())
                 .addPath (new BezierLine(spikeB2start,spikeB2end))
                 .setLinearHeadingInterpolation(spikeB2start.getHeading(), spikeB2end.getHeading())
+                .build();
+
+        CornerPickup = follower.pathBuilder()
+                .addPath (new BezierLine(scorePose, CornerPickupPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), CornerPickupPose.getHeading())
+                .addPath (new BezierLine(CornerPickupPose, scorePose))
+                .setLinearHeadingInterpolation(CornerPickupPose.getHeading(), scorePose.getHeading())
                 .build();
 
     }
@@ -159,24 +167,42 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _45_PreLaunch2:
-                if (!follower.isBusy()) {
+                telemetryMU.addData("pathPose2", pickup1bPose);
+                telemetryMU.addData("scorePose", scorePoseAP);
+                if (follower.isBusy()) { //we are still running path
+//telemetryMU.addData("check intake status", robot.intake.AtIntakeStop); intake.AtIntakeStop is never set to false
+                    if (robot.sensors.bothFilled) {
+                        telemetryMU.addLine("Intake stopped - break follower");
+                        // we've got 3 artifacts, stop the path and return to scorePose
+                        follower.breakFollowing();
+                        newPath();
+                        //   robot.autoRPM.Measure = true; // start fly wheels
+                        robot.autoRPM.Measure = true;
+                        currentStage = stage._50_Launch2;
+                        runtime.reset();
+
+                    } else if (follower.getCurrentTValue() > 0.75) { //the path is almost done
+                        //  robot.autoRPM.Measure = true; //start fly wheels
+                        robot.autoRPM.Measure = true;
+                    }
+                } else {// path is complete we are back at scorePose move to launch
                     robot.autoRPM.Measure = true;
                     currentStage = stage._50_Launch2;
                 }
+
                 break;
             case _50_Launch2:
                 if (!follower.isBusy()) {
                    dolaunch_process();
 
-                }else {
+
                     currentStage = stage._60_PickupConer1;
                 }
                 break;
             case _60_PickupConer1:
-                if (follower.isBusy()) {
+                if (!follower.isBusy()) {
                     endlaunch_process();
-
-                }else {
+                    follower.followPath(CornerPickup);
                     currentStage = stage._70_PreLaunch3;
                 }
                 break;
@@ -305,6 +331,7 @@ public class pp6CycleBlueFar extends OpMode {
         _20_PreLaunch,
         _30_ScorePreload,
         _40_PickupSpike1,
+        _42_,
         _45_PreLaunch2,
         _50_Launch2,
         _60_PickupConer1,
@@ -376,4 +403,5 @@ public class pp6CycleBlueFar extends OpMode {
         follower.followPath(interruptedPickup,true);
 
     }
+
 }

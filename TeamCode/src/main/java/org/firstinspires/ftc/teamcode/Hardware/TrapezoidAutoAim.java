@@ -31,6 +31,9 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
     public double YawDif = 0;
     public boolean JackHappy = false;
     public static double heading = 0;
+
+    private  Robot robot;
+
     /*
     public TrapezoidAutoAim(Limey limey,DriveTrain driveTrain, Telemetry telemetry,HardwareMap hardwareMap){
         this.limey = limey;
@@ -67,21 +70,21 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
         //runtime.log("Position");
         //limey.getTx();
 
-        if(limey == null) return;
+        if(robot.limey == null) return;
         if(driveTrain == null) return;
 
-        if(limey.getTagID() > -1) {
-            YawDif = limey.getTagAngle() * 0.250;
+        if(robot.limey.getTagID() > -1) {
+            YawDif = robot.limey.getTagAngle() * 0.250;
         }
 
         if(!PrimitiveDriver) {
             if (CurrentTurretColor == TurretColor.Red) {
-                if (limey.getTagID() == 24) {
-                    if (limey.getTx() > 72 + YawDif) {
+                if (robot.limey.getTagID() == 24) {
+                    if (robot.limey.getTx() > 72 + YawDif) {
                         JackHappy = false;
                         CurrentMode = Mode.Targeting;
                         //maybe change to ty
-                        if(limey.getTx() <= 36 || limey.getTx() >= 108){
+                        if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                             driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 4),0.35);
                             heading = heading - 4;
                             // turret.cmdRight();
@@ -89,10 +92,10 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                             driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 1), 0.35);
                             heading = heading - 1;
                         }
-                    } else if (limey.getTx() < 72 + YawDif) {
+                    } else if (robot.limey.getTx() < 72 + YawDif) {
                         JackHappy = false;
                         CurrentMode = Mode.Targeting;
-                        if(limey.getTx() <= 36 || limey.getTx() >= 108){
+                        if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                             driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 4),0.35);
                             heading = heading + 4;
                             // turret.cmdLeft();
@@ -102,7 +105,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                         }
                     } else {
                         // turret.cmdNo();
-                        if(limey.getTx() == 72 + YawDif) {
+                        if(robot.limey.getTx() == 72 + YawDif) {
                             JackHappy = true;
                             CurrentMode = Mode.Target_Acquired;
                         }
@@ -117,12 +120,12 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                 }
             }
             if (CurrentTurretColor == TurretColor.Blue) {
-                if (limey.getTagID() == 20) {
-                    if (limey.getTx() > 72 + YawDif) {
+                if (robot.limey.getTagID() == 20) {
+                    if (robot.limey.getTx() > 72 + YawDif) {
                         JackHappy = false;
                         CurrentMode = Mode.Targeting;
                         //turret.cmdRight();
-                        if(limey.getTx() <= 36 || limey.getTx() >= 108){
+                        if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                             driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 4),0.35);
                             heading = heading - 4;
                             // turret.cmdRight();
@@ -130,11 +133,11 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                             driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 1), 0.35);
                             heading = heading - 1;
                         }
-                    } else if (limey.getTx() < 72 + YawDif) {
+                    } else if (robot.limey.getTx() < 72 + YawDif) {
                         JackHappy = false;
                         CurrentMode = Mode.Targeting;
                         //turret.cmdLeft();
-                        if(limey.getTx() <= 36 || limey.getTx() >= 108){
+                        if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                             driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 4),0.35);
                             heading = heading + 4;
                             // turret.cmdRight();
@@ -144,7 +147,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                         }
                     } else {
                         // turret.cmdNo();
-                        if(limey.getTx() == 72 + YawDif){
+                        if(robot.limey.getTx() == 72 + YawDif){
                             JackHappy = true;
                             CurrentMode = Mode.Target_Acquired;
                         }
@@ -162,7 +165,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
         // }
 
 
-        if(CurrentMode == Mode.Targeting && limey.getTagID() == -1){
+        if(CurrentMode == Mode.Targeting && robot.limey.getTagID() == -1){
             CurrentMode = Mode.Target_NotFound;
         }
 /*
@@ -191,18 +194,18 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
     }
 
     public void followMe1(){
-        if(limey.getTagID() == 1){
-            if (limey.getTx() > 72){
+        if(robot.limey.getTagID() == 1){
+            if (robot.limey.getTx() > 72){
                 driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 1),0.35);
-            }else if(limey.getTx() < 72){
+            }else if(robot.limey.getTx() < 72){
                 driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 1),0.35);
             }else{
 
             }
 
-            if(limey.getTagDistance() > 3 && limey.getTagDistance() < 5){
+            if(robot.limey.getTagDistance() > 3 && robot.limey.getTagDistance() < 5){
                 driveTrain.cmdDriveBySensors(6,driveTrain.getCurrentHeading(),0.35,driveTrain.getCurrentHeading());
-            }else if(limey.getTagDistance() > 5 && limey.getTagDistance() > 3){
+            }else if(robot.limey.getTagDistance() > 5 && robot.limey.getTagDistance() > 3){
                 driveTrain.cmdDriveBySensors(12,driveTrain.getCurrentHeading(),0.60,driveTrain.getCurrentHeading());
             }else{
 
