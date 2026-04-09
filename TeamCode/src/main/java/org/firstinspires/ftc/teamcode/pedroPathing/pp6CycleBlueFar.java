@@ -14,10 +14,12 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Common.CommonLogic;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 @Autonomous(name = "pp6CycleBlueFar", group = "PP")
 public class pp6CycleBlueFar extends OpMode {
+
 
     Robot robot = new Robot();
 
@@ -314,6 +316,7 @@ public class pp6CycleBlueFar extends OpMode {
 
 
         }
+        CommonLogic.StartEndPose = follower.getPose();
 
     }
 
