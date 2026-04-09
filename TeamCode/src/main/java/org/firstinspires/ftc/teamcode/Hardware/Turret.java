@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.Common.CommonLogic;
 
 
 public class Turret extends BaseHardware {
@@ -27,6 +28,9 @@ public class Turret extends BaseHardware {
     private double currentAngle = 0;
     private double lastError = 0;
     private double integral = 0;
+
+    private double currentPosition = 0.0;
+    public boolean ableToAim = true;
 
     // limits
     private final double MIN_DEG = -170;
@@ -157,15 +161,65 @@ public class Turret extends BaseHardware {
     }
 
     public void cmdLeft() {
-        rightyTighty.setPosition(0.5);
-        leftyLoosy.setPosition(0.5);
+        rightyTighty.setPosition(0.25);
+        leftyLoosy.setPosition(0.25);
+        currentPosition = currentPosition + 1;
         trapezoidAutoAim.runtime.reset();
     }
     public void cmdRight() {
-        rightyTighty.setPosition(-0.5);
-        leftyLoosy.setPosition(-0.5);
+        rightyTighty.setPosition(-0.25);
+        leftyLoosy.setPosition(-0.25);
+        currentPosition = currentPosition - 1;
         trapezoidAutoAim.runtime.reset();
     }
+
+    public void cmdLeftFar() {
+        rightyTighty.setPosition(1);
+        leftyLoosy.setPosition(1);
+        currentPosition = currentPosition + 4;
+        trapezoidAutoAim.runtime.reset();
+    }
+    public void cmdRightFar() {
+        rightyTighty.setPosition(-1);
+        leftyLoosy.setPosition(-1);
+        currentPosition = currentPosition - 4;
+        trapezoidAutoAim.runtime.reset();
+    }
+
+    public void cmdTurn(int targetPosition, double turretSpeed){
+
+        if(targetPosition > currentPosition){
+            currentPosition = currentPosition - (turretSpeed * 4.0);
+            rightyTighty.setPosition(turretSpeed);
+            leftyLoosy.setPosition(turretSpeed);
+           // cmdTurn(targetPosition, turretSpeed); // turret speed - 0.25 so slows down as gets closer to target
+        }else if(targetPosition < currentPosition){
+            currentPosition = currentPosition + (turretSpeed * 4.0);
+            rightyTighty.setPosition(turretSpeed);
+            leftyLoosy.setPosition(turretSpeed);
+           // cmdTurn(targetPosition, turretSpeed);
+        }else{
+            cmdNo();
+        }
+
+        if(!CommonLogic.inRange(currentPosition, targetPosition, 1)){
+            if(CommonLogic.inRange(currentPosition, targetPosition, 10)){
+                cmdTurn(targetPosition, turretSpeed - (turretSpeed * 0.1));
+                ableToAim = false;
+            }else{
+                cmdTurn(targetPosition, turretSpeed);
+                ableToAim = false;
+            }
+        }else{
+            cmdNo();
+            ableToAim = true;
+        }
+    }
+
+
+
+
+
     public void cmdNo() {
         rightyTighty.setPosition(0);
         leftyLoosy.setPosition(0);
