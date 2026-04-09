@@ -36,12 +36,11 @@ public class ppNearRed6 extends OpMode {
     public static Pose scorePose = new Pose(15, 15, Math.toRadians(114)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     //private final Pose scorePose = new Pose(wallScoreX, wallScoreY, wallScoreH); // seeing if configurables work for this. Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     public static Pose scorePoseAP = new Pose(20, 20, Math.toRadians(10));
-    public static Pose spikePickup1 = new Pose(120, 80, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-    public static Pose spikePickup2 = new Pose(120, 60, Math.toRadians(190)); // (First Set) of Artifacts picked up.
-    public static Pose spickpickup3 =  new Pose(120, 35, Math.toRadians(200));
+    public static Pose pickup1aPose = new Pose(120, 80, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
+    public static Pose pickup1bPose = new Pose(120, 60, Math.toRadians(190)); // (First Set) of Artifacts picked up.
     public static Pose pickupgatePose = new Pose(140, 50, Math.toRadians(200));
     public static Pose pickup1cPose = new Pose(120, 40, Math.toRadians(180));
-    public static Pose driveGateOpenPose = new Pose(110, 72, Math.toRadians(25));
+
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
     private PathChain cyclePickup1;
@@ -49,14 +48,14 @@ public class ppNearRed6 extends OpMode {
 
     public void buildPaths() {
         cyclePickup1 = follower.pathBuilder()
-                .addPath(new BezierLine(scorePose, spikePickup1))
-                .setLinearHeadingInterpolation(scorePose.getHeading(), spikePickup1.getHeading())
+                .addPath(new BezierLine(scorePose, pickup1aPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), pickup1aPose.getHeading())
 
-                .addPath(new BezierLine(spikePickup1, scorePoseAP))
-                .setLinearHeadingInterpolation(spikePickup1.getHeading(), scorePose.getHeading())
+                .addPath(new BezierLine(pickup1aPose, pickup1bPose))
+                .setLinearHeadingInterpolation(pickup1aPose.getHeading(), pickup1bPose.getHeading())
 
-                .addPath(new BezierCurve(spikePickup2, scorePoseAP))
-                .setLinearHeadingInterpolation(spikePickup2.getHeading(), scorePose.getHeading())
+                .addPath(new BezierCurve(pickup1bPose, scorePoseAP))
+                .setLinearHeadingInterpolation(pickup1bPose.getHeading(), scorePose.getHeading())
 
                 .build();
 
@@ -143,113 +142,14 @@ public class ppNearRed6 extends OpMode {
                  break;
             case _30_Spike1:
                 if (follower.isBusy()) {
-                    if (follower.isBusy()) {
-                        endlaunch_process();
-                    }
+
                     telemetryMU.addData("Cornor pickup", follower.getPose());
                 }else {
                     currentStage = stage._1000_end;
                 }
                 break;
-            case _35_DrivetoLaunch1a
-                    :
-                break;
-            case _37_Prelaunch2:
-                if (!follower.isBusy()) {
-                    follower.followPath(scorePreload, true);
-                    robot.autoRPM.Measure = true;
-                }
-            break;
-            case _40_Launch1:
-                if (follower.isBusy()){
-                    dolaunch_process();
-                    currentStage = stage._50_Spike2;
-                }
-                break;
-            case _50_Spike2:
-                if (follower.isBusy()) {
-                    endlaunch_process();
-
-                }
-                break;
-            case _60_DrivetoLaunch1b:
-
-                break;
-            case _62_Prelaunch3:
-                if (!follower.isBusy()){
-                follower.followPath(scorePreload, true);
-                robot.autoRPM.Measure = true;
-            }
-            break;
-            case _65_Launch2:
-                if (follower.isBusy()){
-                    dolaunch_process();
-                    currentStage = stage._70_Spike3;
-                }
-                break;
-            case _70_Spike3:
-                if (follower.isBusy()) {
-                    endlaunch_process();
-
-                }
-                break;
-            case _80_DrivetoLaunch1c:
-
-                break;
-            case _85_Prelaunch4:
-                if (!follower.isBusy()){
-                    follower.followPath(scorePreload, true);
-                    robot.autoRPM.Measure = true;
-                }
-
-                break;
-            case _90_Launch3:
-                if (follower.isBusy()){
-                    dolaunch_process();
-                    currentStage = stage._110_PickupGate1;
-                }
-                break;
-            case _110_PickupGate1:
-                if (follower.isBusy()) {
-                    endlaunch_process();
-
-                }
-                break;
-            case _120_DrivetoLaunch2a:
-
-                break;
-            case _125_Prelaunch5:
-                if (!follower.isBusy()){
-                    follower.followPath(scorePreload, true);
-                    robot.autoRPM.Measure = true;
-                }
-                break;
-            case _130_Launch4:
-                if (follower.isBusy()){
-                    dolaunch_process();
-                    currentStage = stage._135_Tunnelpickup;
-                }
-                break;
-            case _135_Tunnelpickup:
-                if (follower.isBusy()) {
-                    endlaunch_process();
-
-                }
-
-                break;
-            case _140_DrivetpLaunch2c:
-
-                break;
-            case _150_Launch5:
-                if (follower.isBusy()){
-                    dolaunch_process();
-                    currentStage = stage._1000_end;
-                }
-                break;
-
             case _1000_end:
-                if (!follower.isBusy())
-                endlaunch_process();{
+                if (!follower.isBusy()) {
                     telemetryMU.addData("Drive Complete?", follower.isBusy());
                     stop();
                     runtime.reset();
@@ -278,25 +178,20 @@ public class ppNearRed6 extends OpMode {
         _25_ScorePrelaunch,
         _30_Spike1,
         _35_DrivetoLaunch1a,
-        _37_Prelaunch2,
         _40_Launch1,
         _50_Spike2,
         _60_DrivetoLaunch1b,
-        _62_Prelaunch3,
         _65_Launch2,
         _70_Spike3,
         _80_DrivetoLaunch1c,
-        _85_Prelaunch4,
         _90_Launch3,
         _100_Gatepos1,
         _110_PickupGate1,
         _120_DrivetoLaunch2a,
-        _125_Prelaunch5,
-        _130_Launch4,
-        _135_Tunnelpickup,
-        _140_DrivetpLaunch2c,
-        _145_Prelaunch6,
-        _150_Launch5,
+        _125_Launch4,
+        _130_Tunnelpickup,
+        _160_Launch5,
+        _170_,
         _1000_end;
 
 
@@ -311,13 +206,6 @@ public class ppNearRed6 extends OpMode {
 
 
 
-
-    }
-    private void endlaunch_process(){
-
-        robot.launcherBlocker.cmdBlock();
-        robot.autoRPM.Measure = false;
-        robot.launcher.cmdStop();
 
     }
 
@@ -350,4 +238,3 @@ public class ppNearRed6 extends OpMode {
 
 
 }
-//________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________________
