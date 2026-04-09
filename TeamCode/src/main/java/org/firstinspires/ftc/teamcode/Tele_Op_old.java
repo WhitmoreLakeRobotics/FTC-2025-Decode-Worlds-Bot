@@ -426,8 +426,8 @@ public class Tele_Op_old extends OpMode {
         }
 
         if (gamepad1.left_trigger <= 0.8) {
-            systemXTolTime.reset();
-            systemXReady = true;
+           // systemXTolTime.reset();
+           // systemXReady = true;
 
         }
 

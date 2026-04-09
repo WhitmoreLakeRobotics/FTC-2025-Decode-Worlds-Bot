@@ -79,7 +79,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                         //maybe change to ty
                         if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                           //  driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 4),0.35);
-                            heading = heading + 4;
+                            heading = heading + 3;
                             robot.turret.cmdRightFar();
                         }else{
                            // driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 1), 0.35);
@@ -91,7 +91,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                         CurrentMode = Mode.Targeting;
                         if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                            // driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 4),0.35);
-                            heading = heading - 4;
+                            heading = heading - 3;
                             robot.turret.cmdLeftFar();
                         }else{
                            // driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 1), 0.35);
@@ -119,7 +119,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                        // robot.turret.cmdRight();
                         if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                           //  driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 4),0.35);
-                            heading = heading + 4;
+                            heading = heading + 3;
                             robot.turret.cmdRightFar();
                         }else{
                            // driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 1), 0.35);
@@ -132,7 +132,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
                         //robot.turret.cmdLeft();
                         if(robot.limey.getTx() <= 36 || robot.limey.getTx() >= 108){
                             //driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 4),0.35);
-                            heading = heading - 4;
+                            heading = heading - 3;
                             robot.turret.cmdLeftFar();
                         }else{
                             //driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 1), 0.35);
@@ -163,15 +163,15 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
             CurrentMode = Mode.Target_NotFound;
         }
 
-        if(heading > 170){
+       // if(heading > 170){
             //driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() - 340),0.70);
-            heading = heading - 335;
-        } else if (heading < -170){
+            //heading = heading - 335;
+      //  } else if (heading < -170){
             //driveTrain.cmdTurn(Math.abs(driveTrain.getCurrentHeading() + 340),0.70);
-            heading = heading + 335;
-        }else {
+           // heading = heading + 335;
+      //  }else {
 
-        }
+      //  }
 
 
 
