@@ -167,28 +167,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _45_PreLaunch2:
-                telemetryMU.addData("pathPose2", pickup1bPose);
-                telemetryMU.addData("scorePose", scorePoseAP);
-                if (follower.isBusy()) { //we are still running path
-//telemetryMU.addData("check intake status", robot.intake.AtIntakeStop); intake.AtIntakeStop is never set to false
-                    if (robot.sensors.bothFilled) {
-                        telemetryMU.addLine("Intake stopped - break follower");
-                        // we've got 3 artifacts, stop the path and return to scorePose
-                        follower.breakFollowing();
-                        newPath();
-                        //   robot.autoRPM.Measure = true; // start fly wheels
-                        robot.autoRPM.Measure = true;
-                        currentStage = stage._50_Launch2;
-                        runtime.reset();
-
-                    } else if (follower.getCurrentTValue() > 0.75) { //the path is almost done
-                        //  robot.autoRPM.Measure = true; //start fly wheels
-                        robot.autoRPM.Measure = true;
-                    }
-                } else {// path is complete we are back at scorePose move to launch
-                    robot.autoRPM.Measure = true;
-                    currentStage = stage._50_Launch2;
-                }
+               AreYouSure(stage._50_Launch2);
 
                 break;
             case _50_Launch2:
@@ -201,32 +180,29 @@ public class pp6CycleBlueFar extends OpMode {
                 break;
             case _60_PickupConer1:
                 if (!follower.isBusy()) {
-                    endlaunch_process();
-                    follower.followPath(CornerPickup);
-                    currentStage = stage._70_PreLaunch3;
+                    if (runtime.milliseconds() > 500 ) { //add sensors here
+                        endlaunch_process();
+                        follower.followPath(CornerPickup);
+                        currentStage = stage._70_PreLaunch3;
+                    }
                 }
                 break;
             case _70_PreLaunch3:
-                if (follower.isBusy()) {
-                    robot.autoRPM.Measure = true;
-
-                }else {
-                    currentStage = stage._75_Launch3;
-                }
+                AreYouSure(stage._75_Launch3);
                 break;
-            case _75_Launch3:
-                if (follower.isBusy()) {
-                    dolaunch_process();
 
-                }else {
+
+            case _75_Launch3:
+                if (!follower.isBusy()) {
+                    dolaunch_process();
                     currentStage = stage._80_PickupSpike2;
                 }
                 break;
             case _80_PickupSpike2:
-                if (follower.isBusy()) {
+                if (runtime.milliseconds() > 500 ) { //add sensors here
                     endlaunch_process();
+                follower.followPath(spikeB2);
 
-                }else {
                     currentStage = stage._90_PreLaunch4;
                 }
                 break;
@@ -366,6 +342,40 @@ public class pp6CycleBlueFar extends OpMode {
         robot.launcherBlocker.cmdBlock();
         robot.autoRPM.Measure = false;
         robot.launcher.cmdStop();
+
+    }
+
+    private void AreYouSure(stage NextStage){
+
+        //telemetryMU.addData("pathPose2", pickup1bPose);
+        //telemetryMU.addData("scorePose", scorePoseAP);
+        if (follower.isBusy()) { //we are still running path
+//telemetryMU.addData("check intake status", robot.intake.AtIntakeStop); intake.AtIntakeStop is never set to false
+            if (robot.sensors.bothFilled) {
+                telemetryMU.addLine("Intake stopped - break follower");
+                // we've got 3 artifacts, stop the path and return to scorePose
+                follower.breakFollowing();
+                newPath();
+                //   robot.autoRPM.Measure = true; // start fly wheels
+                robot.autoRPM.Measure = true;
+                currentStage = NextStage;
+                runtime.reset();
+
+            } else if (follower.getCurrentTValue() > 0.75) { //the path is almost done
+                //  robot.autoRPM.Measure = true; //start fly wheels
+                robot.autoRPM.Measure = true;
+            }
+        } else {// path is complete we are back at scorePose move to launch
+            robot.autoRPM.Measure = true;
+            currentStage = NextStage;
+        }
+
+
+
+
+
+
+
 
     }
 
