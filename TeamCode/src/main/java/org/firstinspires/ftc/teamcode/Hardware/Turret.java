@@ -174,26 +174,29 @@ public class Turret extends BaseHardware {
     }
 
     public void cmdLeftFar() {
-        rightyTighty.setPosition(1);
-        leftyLoosy.setPosition(1);
-        currentPosition = currentPosition + 4;
+        rightyTighty.setPosition(0.75);
+        leftyLoosy.setPosition(0.75);
+        currentPosition = currentPosition + 3;
         trapezoidAutoAim.runtime.reset();
     }
     public void cmdRightFar() {
-        rightyTighty.setPosition(-1);
-        leftyLoosy.setPosition(-1);
-        currentPosition = currentPosition - 4;
+        rightyTighty.setPosition(-0.75);
+        leftyLoosy.setPosition(-0.75);
+        currentPosition = currentPosition - 3;
         trapezoidAutoAim.runtime.reset();
     }
 
+    /*
     public void cmdTurn(int targetPosition, double turretSpeed){
 
         if(targetPosition > currentPosition){
+        driverOverride = true;
             currentPosition = currentPosition - (turretSpeed * 4.0);
             rightyTighty.setPosition(turretSpeed);
             leftyLoosy.setPosition(turretSpeed);
            // cmdTurn(targetPosition, turretSpeed); // turret speed - 0.25 so slows down as gets closer to target
         }else if(targetPosition < currentPosition){
+         driverOverride = true;
             currentPosition = currentPosition + (turretSpeed * 4.0);
             rightyTighty.setPosition(turretSpeed);
             leftyLoosy.setPosition(turretSpeed);
@@ -204,17 +207,20 @@ public class Turret extends BaseHardware {
 
         if(!CommonLogic.inRange(currentPosition, targetPosition, 1)){
             if(CommonLogic.inRange(currentPosition, targetPosition, 10)){
+                ableToAim = false;
                 cmdTurn(targetPosition, turretSpeed - (turretSpeed * 0.1));
-                ableToAim = false;
             }else{
-                cmdTurn(targetPosition, turretSpeed);
                 ableToAim = false;
+                cmdTurn(targetPosition, turretSpeed);
             }
         }else{
+         driverOverride = false;
             cmdNo();
             ableToAim = true;
         }
     }
+
+     */
 
 
 

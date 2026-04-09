@@ -33,6 +33,7 @@ public RevColorSensorV3 NTKAP3;
     public boolean bothFilled = false;
     private boolean sensorStable = false;
     //private Mode CurrentMode = Mode.STOP;
+    public boolean NoBalls = false;
 
     private int SensorBlue;
     private int SensorRed;
@@ -142,6 +143,13 @@ public RevColorSensorV3 NTKAP3;
     public void loop(){
         //cmdPlate();
 
+        if(CurrentDistance1 == Distance1.MISSING1 && CurrentDistance2 == Distance2.MISSING2 &&
+                CurrentDistance3 == Distance3.MISSING3){
+            NoBalls = true;
+        }else{
+            NoBalls = false;
+        }
+
         if(sensorTime.milliseconds() >= 1000){
             sensorStable = true;
         }else{
@@ -231,6 +239,7 @@ public RevColorSensorV3 NTKAP3;
     public void cmdResetSensor(){
         sensorTime.reset();
         sensorStable = false;
+        CurrentDistance1 = Distance1.MISSING1;
         CurrentDistance2 = Distance2.MISSING2;
         CurrentDistance3 = Distance3.MISSING3;
         bothFilled = false;
