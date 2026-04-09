@@ -325,6 +325,8 @@ public class pp6CycleBlueFar extends OpMode {
     @Override
     public void stop () {
         //super.stop();
+
+        CommonLogic.StartEndPose = follower.getPose();
         robot.stop();
     }
     private enum stage {
