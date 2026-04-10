@@ -116,7 +116,7 @@ public class Robot extends BaseHardware {
         sensors.telemetry = this.telemetry;
         sensors.init();
 
-        autoAim = new AutoAim(limey, turret, driveTrain);
+        autoAim = new AutoAim();  //limey, turret, driveTrain  now removed;
         autoAim.hardwareMap = this.hardwareMap;
         autoAim.telemetry = this.telemetry;
         autoAim.init();
