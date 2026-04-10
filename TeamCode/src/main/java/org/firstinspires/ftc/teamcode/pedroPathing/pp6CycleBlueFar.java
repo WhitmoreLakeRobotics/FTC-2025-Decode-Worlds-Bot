@@ -166,7 +166,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _40_PickupSpike1:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
                     endlaunch_process();
                 follower.followPath(cyclePickup1);
                     currentStage = stage._45_PreLaunch2;
@@ -186,7 +186,7 @@ public class pp6CycleBlueFar extends OpMode {
                 break;
             case _60_PickupConer1:
                 if (!follower.isBusy()) {
-                    if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                    if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
                         endlaunch_process();
                         follower.followPath(CornerPickup);
                         currentStage = stage._70_PreLaunch3;
@@ -205,7 +205,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _80_PickupSpike2:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
                     endlaunch_process();
                 follower.followPath(spikeB2);
 
@@ -222,7 +222,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _110_PickupCorner2:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
                 endlaunch_process();
                     if (!follower.isBusy()) {
                         follower.followPath(CornerPickup);
@@ -244,7 +244,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _140_PickupCorner6:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
                     endlaunch_process();
                     currentStage = stage._150_PreLaunch6;
                 }
