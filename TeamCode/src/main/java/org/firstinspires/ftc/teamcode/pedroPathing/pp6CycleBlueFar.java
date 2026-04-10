@@ -34,8 +34,8 @@ public class pp6CycleBlueFar extends OpMode {
 
 
     public static Follower follower;
-    public static Pose startPose = new Pose(10, 10, Math.toRadians(90)); // Start Pose of our robot.
-    public static Pose scorePose = new Pose(15, 15, Math.toRadians(114)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    public static Pose startPose = new Pose(56, 8, Math.toRadians(90)); // Start Pose of our robot.
+    public static Pose scorePose = new Pose(62, 17, Math.toRadians(114)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     //private final Pose scorePose = new Pose(wallScoreX, wallScoreY, wallScoreH); // seeing if configurables work for this. Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     public static Pose scorePoseAP = new Pose(20, 20, Math.toRadians(10));
     public static Pose pickup1aPose = new Pose(25, 25, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
@@ -51,7 +51,7 @@ public class pp6CycleBlueFar extends OpMode {
 
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
-    private PathChain cyclePickup1,spikeB2, interruptedPickup, CornerPickup;
+    private PathChain cyclePickup1,spikeB2, interruptedPickup, CornerPickup, Park;
 
 
     public void buildPaths() {
@@ -83,6 +83,10 @@ public class pp6CycleBlueFar extends OpMode {
                 .setLinearHeadingInterpolation(scorePose.getHeading(), CornerPickupPose.getHeading())
                 .addPath (new BezierLine(CornerPickupPose, scorePose))
                 .setLinearHeadingInterpolation(CornerPickupPose.getHeading(), scorePose.getHeading())
+                .build();
+
+        Park = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, CornerPickupPose))
                 .build();
 
     }
@@ -162,7 +166,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _40_PickupSpike1:
-                if (runtime.milliseconds() > 500 ) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                     endlaunch_process();
                 follower.followPath(cyclePickup1);
                     currentStage = stage._45_PreLaunch2;
@@ -182,7 +186,7 @@ public class pp6CycleBlueFar extends OpMode {
                 break;
             case _60_PickupConer1:
                 if (!follower.isBusy()) {
-                    if (runtime.milliseconds() > 500 ) { //add sensors here
+                    if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                         endlaunch_process();
                         follower.followPath(CornerPickup);
                         currentStage = stage._70_PreLaunch3;
@@ -201,7 +205,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _80_PickupSpike2:
-                if (runtime.milliseconds() > 500 ) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                     endlaunch_process();
                 follower.followPath(spikeB2);
 
@@ -209,74 +213,55 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _90_PreLaunch4:
-                if (follower.isBusy()) {
-                    robot.autoRPM.Measure = true;
-
-                }else {
-                    currentStage = stage._100_Launch4;
-
-                }
+              AreYouSure(stage._100_Launch4);
                 break;
             case _100_Launch4:
-                if (follower.isBusy()) {
-
-
-                }else {
+                if (!follower.isBusy()) {
+                    dolaunch_process();
                     currentStage = stage._110_PickupCorner2;
                 }
                 break;
             case _110_PickupCorner2:
-                if (follower.isBusy()) {
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                endlaunch_process();
+                    if (!follower.isBusy()) {
+                        follower.followPath(CornerPickup);
 
+                    }
 
-                }else {
                     currentStage = stage._120_Prelaunch5;
                 }
                 break;
             case _120_Prelaunch5:
-                if (follower.isBusy()) {
-                    robot.autoRPM.Measure = true;
-
-                }else {
-                    currentStage = stage._130_Launch5;
-                }
+               AreYouSure(stage._130_Launch5);
                 break;
+
+
             case _130_Launch5:
-                if (follower.isBusy()) {
-
-
-                }else {
+                if (!follower.isBusy()) {
+                    dolaunch_process();
                     currentStage = stage._140_PickupCorner6;
                 }
                 break;
             case _140_PickupCorner6:
-                if (follower.isBusy()) {
-
-
-                }else {
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                    endlaunch_process();
                     currentStage = stage._150_PreLaunch6;
                 }
             case _150_PreLaunch6:
-                if (follower.isBusy()) {
-                    robot.autoRPM.Measure = true;
-
-                }else {
-                    currentStage = stage._160_Launch6;
-                }
+              AreYouSure(stage._160_Launch6);
                 break;
+
+
             case _160_Launch6:
-                if (follower.isBusy()) {
-
-
-                }else {
+                if (!follower.isBusy()) {
+                    dolaunch_process();
                     currentStage = stage._170_ParkToBeContinued;
                 }
                 break;
             case _170_ParkToBeContinued:
-                if (follower.isBusy()) {
-
-
-                }else {
+                if (!follower.isBusy()) {
+                  follower.followPath(Park);
                     currentStage = stage._200_end;
                 }
                 break;
