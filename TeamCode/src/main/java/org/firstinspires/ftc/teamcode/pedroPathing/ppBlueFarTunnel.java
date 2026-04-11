@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Common.CommonLogic;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
-@Autonomous(name = "pp6CycleBlueFar", group = "PP")
-public class pp6CycleBlueFar extends OpMode {
+@Autonomous(name = "ppBlueFarTunnel", group = "PP")
+public class ppBlueFarTunnel extends OpMode {
 
 
     Robot robot = new Robot();
@@ -29,6 +29,7 @@ public class pp6CycleBlueFar extends OpMode {
     private TelemetryManager telemetryMU;
     private stage currentStage = stage._00_unknown;
     private ElapsedTime runtime = new ElapsedTime();
+    private ElapsedTime gametime = new ElapsedTime();
     public boolean End = false;
 
 
@@ -129,6 +130,7 @@ public class pp6CycleBlueFar extends OpMode {
     public void start () {
         //super.start();
         robot.start();
+        gametime.reset();
     }
 
     @Override
@@ -205,9 +207,9 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _80_PickupSpike2:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) {
                     endlaunch_process();
-                follower.followPath(spikeB2);
+                follower.followPath(CornerPickup);
 
                     currentStage = stage._90_PreLaunch4;
                 }
@@ -222,46 +224,41 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _110_PickupCorner2:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
-                endlaunch_process();
-                    if (!follower.isBusy()) {
-                        follower.followPath(CornerPickup);
-
+                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) {
+                    if(gametime.milliseconds() >= 28000){
+                        currentStage = stage._200_end;
+                    }else {
+                        endlaunch_process();
+                        if (!follower.isBusy()) {
+                            follower.followPath(CornerPickup); //extended
+                            currentStage = stage._120_Prelaunch5;
+                        }
                     }
-
-                    currentStage = stage._120_Prelaunch5;
                 }
                 break;
             case _120_Prelaunch5:
-               AreYouSure(stage._130_Launch5);
-                break;
+                if(gametime.milliseconds() >= 28000){
+                    currentStage = stage._200_end;
+                }else{
+                    AreYouSure(stage._130_Launch5);
+                }
 
+                break;
 
             case _130_Launch5:
                 if (!follower.isBusy()) {
-                    dolaunch_process();
-                    currentStage = stage._140_PickupCorner6;
-                }
-                break;
-            case _140_PickupCorner6:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
-                    endlaunch_process();
-                    currentStage = stage._150_PreLaunch6;
-                }
-            case _150_PreLaunch6:
-              AreYouSure(stage._160_Launch6);
-                break;
 
-
-            case _160_Launch6:
-                if (!follower.isBusy()) {
-                    dolaunch_process();
-                    currentStage = stage._170_ParkToBeContinued;
+                   if(gametime.milliseconds() >= 28000){
+                       currentStage = stage._200_end;
+                    }else{
+                       dolaunch_process();
+                       currentStage = stage._110_PickupCorner2;
+                   }
                 }
                 break;
             case _170_ParkToBeContinued:
                 if (!follower.isBusy()) {
-                  follower.followPath(Park);
+                  follower.followPath(Park); // after 2secs remain
                     currentStage = stage._200_end;
                 }
                 break;

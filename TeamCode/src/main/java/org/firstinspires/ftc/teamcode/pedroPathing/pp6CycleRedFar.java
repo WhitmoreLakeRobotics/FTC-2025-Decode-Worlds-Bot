@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Common.CommonLogic;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
-@Autonomous(name = "pp6CycleBlueFar", group = "PP")
-public class pp6CycleBlueFar extends OpMode {
+@Autonomous(name = "pp6CycleRedFar", group = "PP")
+public class pp6CycleRedFar extends OpMode {
 
 
     Robot robot = new Robot();
@@ -34,8 +34,8 @@ public class pp6CycleBlueFar extends OpMode {
 
 
     public static Follower follower;
-    public static Pose startPose = new Pose(56, 8, Math.toRadians(90)); // Start Pose of our robot.
-    public static Pose scorePose = new Pose(62, 17, Math.toRadians(114)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    public static Pose startPose = new Pose(88, 8, Math.toRadians(90)); // Start Pose of our robot.
+    public static Pose scorePose = new Pose(82, 17, Math.toRadians(66)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     //private final Pose scorePose = new Pose(wallScoreX, wallScoreY, wallScoreH); // seeing if configurables work for this. Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     public static Pose scorePoseAP = new Pose(20, 20, Math.toRadians(10));
     public static Pose pickup1aPose = new Pose(25, 25, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
@@ -43,15 +43,17 @@ public class pp6CycleBlueFar extends OpMode {
     public static Pose pickup1bPoseC = new Pose(1, 27, Math.toRadians(200));
     public static Pose pickup1cPose = new Pose(4, 13.5, Math.toRadians(180));
     public static Pose currentPose  = new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(follower.getPose().getHeading()));
-    public static Pose spikeB2start = new Pose (35,60,Math.toRadians(90));
-    public static Pose spikeB2end = new Pose (15,60,Math.toRadians(90));
-    public static Pose CornerPickupPose = new Pose (8,9,Math.toRadians(180));
+    //public static Pose spikeB2start = new Pose (35,60,Math.toRadians(90));
+    //public static Pose spikeB2end = new Pose (15,60,Math.toRadians(90));
+    public static Pose CornerPickupPose = new Pose (135,8,Math.toRadians(0));
+    public static Pose spikeR2start = new Pose (110,60,Math.toRadians(0));
+    public static Pose spikeR2end = new Pose (130,60,Math.toRadians(0));
 
 
 
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
-    private PathChain cyclePickup1,spikeB2, interruptedPickup, CornerPickup, Park;
+    private PathChain cyclePickup1, interruptedPickup, CornerPickup, Park, spikeR2;
 
 
     public void buildPaths() {
@@ -70,13 +72,15 @@ public class pp6CycleBlueFar extends OpMode {
                 .addPath (new BezierLine(startPose, scorePose))
                 .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
                 .build();
-
+/*
         spikeB2 = follower.pathBuilder()
                 .addPath(new BezierLine(currentPose, spikeB2start))
                 .setLinearHeadingInterpolation(currentPose.getHeading(), spikeB2start.getHeading())
                 .addPath (new BezierLine(spikeB2start,spikeB2end))
                 .setLinearHeadingInterpolation(spikeB2start.getHeading(), spikeB2end.getHeading())
                 .build();
+
+ */
 
         CornerPickup = follower.pathBuilder()
                 .addPath (new BezierLine(scorePose, CornerPickupPose))
@@ -87,6 +91,14 @@ public class pp6CycleBlueFar extends OpMode {
 
         Park = follower.pathBuilder()
                 .addPath(new BezierLine(currentPose, CornerPickupPose))
+                .build();
+
+        spikeR2 = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, spikeR2start))
+                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeR2start.getHeading())
+
+                .addPath (new BezierLine(spikeR2start,spikeR2end))
+                .setLinearHeadingInterpolation(spikeR2start.getHeading(), spikeR2end.getHeading())
                 .build();
 
     }
@@ -166,7 +178,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _40_PickupSpike1:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                     endlaunch_process();
                 follower.followPath(cyclePickup1);
                     currentStage = stage._45_PreLaunch2;
@@ -186,7 +198,7 @@ public class pp6CycleBlueFar extends OpMode {
                 break;
             case _60_PickupConer1:
                 if (!follower.isBusy()) {
-                    if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
+                    if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                         endlaunch_process();
                         follower.followPath(CornerPickup);
                         currentStage = stage._70_PreLaunch3;
@@ -205,9 +217,9 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _80_PickupSpike2:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                     endlaunch_process();
-                follower.followPath(spikeB2);
+                follower.followPath(spikeR2);
 
                     currentStage = stage._90_PreLaunch4;
                 }
@@ -222,7 +234,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _110_PickupCorner2:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                 endlaunch_process();
                     if (!follower.isBusy()) {
                         follower.followPath(CornerPickup);
@@ -244,7 +256,7 @@ public class pp6CycleBlueFar extends OpMode {
                 }
                 break;
             case _140_PickupCorner6:
-                if (runtime.milliseconds() > 500 || robot.sensors.NoArtifacts) { //add sensors here
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                     endlaunch_process();
                     currentStage = stage._150_PreLaunch6;
                 }

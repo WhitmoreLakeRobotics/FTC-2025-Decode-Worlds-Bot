@@ -4,7 +4,6 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -116,7 +115,7 @@ public class Robot extends BaseHardware {
         sensors.telemetry = this.telemetry;
         sensors.init();
 
-        autoAim = new AutoAim(limey, turret, driveTrain);
+        autoAim = new AutoAim();  //limey, turret, driveTrain  now removed;
         autoAim.hardwareMap = this.hardwareMap;
         autoAim.telemetry = this.telemetry;
         autoAim.init();
@@ -184,7 +183,7 @@ public class Robot extends BaseHardware {
         trapezoidAutoAim.loop();
         lighting.loop();
         setIntakeLighting(); //naj moved the code to this method to de-clutter the code
-        intake.setIntakeFull( sensors.getBothFilled()); //naj moved
+        intake.setIntakeFull( sensors.getAllFilled()); //naj moved
         //naj need to add stuff to change the status of intake itself
 
 

@@ -23,6 +23,8 @@ public class SystemX extends OpMode {
     Robot robot = new Robot();
     ppNearRed6 ppNearRed6 = new ppNearRed6();
     pp6CycleBlueFar pp6CycleBlueFar = new pp6CycleBlueFar();
+    ppNearBlue6 ppNearBlue6 = new ppNearBlue6();
+    pp6CycleRedFar pp6CycleRedFar = new pp6CycleRedFar();
 
 
     private String thisUpdate = "0";
@@ -59,20 +61,21 @@ public class SystemX extends OpMode {
     public static Pose scoreCheck = new Pose(90,135,(Math.toRadians(90)));   //check
     public static Pose startPose2 = new Pose(110, 135, Math.toRadians(90));
     public static Pose scoreCheckCorrect = new Pose (54,135, Math.toRadians(-90));//check
-    public static Pose spikeB1start = new Pose (35,84,Math.toRadians(90));
-    public static Pose spikeB1end = new Pose (15,84,Math.toRadians(90));
-    public static Pose spikeB2start = new Pose (35,60,Math.toRadians(90));
-    public static Pose spikeB2end = new Pose (15,60,Math.toRadians(90));
-    public static Pose spikeB3start = new Pose (35,36,Math.toRadians(90));
-    public static Pose spikeB3end = new Pose (15,36,Math.toRadians(90));
-    public static Pose spikeR1start = new Pose (110,84,Math.toRadians(-90));
-    public static Pose spikeR1end = new Pose (130,84,Math.toRadians(-90));
-    public static Pose spikeR2start = new Pose (110,60,Math.toRadians(-90));
-    public static Pose spikeR2end = new Pose (130,60,Math.toRadians(-90));
-    public static Pose spikeR3start = new Pose (110,36,Math.toRadians(-90));
-    public static Pose spikeR3end = new Pose (130,36,Math.toRadians(-90));
+    public static Pose spikeB1start = new Pose (35,84,Math.toRadians(180));
+    public static Pose spikeB1end = new Pose (15,84,Math.toRadians(180));
+    public static Pose spikeB2start = new Pose (35,60,Math.toRadians(180));
+    public static Pose spikeB2end = new Pose (15,60,Math.toRadians(180));
+    public static Pose spikeB3start = new Pose (35,36,Math.toRadians(180));
+    public static Pose spikeB3end = new Pose (15,36,Math.toRadians(180));
+    public static Pose spikeR1start = new Pose (110,84,Math.toRadians(0));
+    public static Pose spikeR1end = new Pose (130,84,Math.toRadians(0));
+    public static Pose spikeR2start = new Pose (110,60,Math.toRadians(0));
+    public static Pose spikeR2end = new Pose (130,60,Math.toRadians(0));
+    public static Pose spikeR3start = new Pose (110,36,Math.toRadians(0));
+    public static Pose spikeR3end = new Pose (130,36,Math.toRadians(0));
     public static Pose LaunchRN = new Pose(60,84,Math.toRadians(-45)); // -45 is placeholder
-    public static Pose LaunchBN = new Pose(84,84,Math.toRadians(45)); // 45 is placeholder
+    public static Pose LaunchBN = new Pose(84,84,Math.toRadians(45));// 45 is placeholder
+    public static Pose Rcorner = new Pose(11.3,8.9,Math.toRadians(190));
 
 
     //private final Pose scorePose = new Pose(wallScoreX, wallScoreY, wallScoreH); // seeing if configurables work for this. Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
@@ -84,7 +87,7 @@ public class SystemX extends OpMode {
 
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
-    private PathChain cyclePickup1, interruptedPickup,scorePreload2,checkColor, correctPos, correctPos2, spikeB1, spikeB2, spikeB3, spikeR1, spikeR2, spikeR3, doLaunchRN, doLaunchBN, doLaunchRF, doLaunchBF, doPickupBT ,doPickupRT;
+    private PathChain cyclePickup1, interruptedPickup,scorePreload2,checkColor, correctPos, correctPos2, spikeB1, spikeB2, spikeB3, spikeR1, spikeR2, spikeR3, doLaunchRN, doLaunchBN, doLaunchRF, doLaunchBF, doPickupBT ,doPickupRT, cornerR;
 
     public void buildPaths() {
         cyclePickup1 = follower.pathBuilder()
@@ -206,6 +209,11 @@ public class SystemX extends OpMode {
                 .setLinearHeadingInterpolation(currentPose.getHeading(), pickTunnelRed.getHeading())
                 .build();
 
+        cornerR = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, Rcorner))
+                .setLinearHeadingInterpolation(currentPose.getHeading(), Rcorner.getHeading())
+                .build();
+
 
     }
 
@@ -292,9 +300,9 @@ public class SystemX extends OpMode {
         telemetry.addData("Auton Running",choosenAuton);
 
 //updateTelemetry();                                                                   p
-        telemetry.addData("Auton_Current_Stage ", currentStage);
-        robot.autonLoop();
-        follower.update();
+        //telemetry.addData("Auton_Current_Stage ", currentStage);
+       // robot.autonLoop();
+       // follower.update();
         switch (currentStage) {
             case _00_unknown:
                 if(readyLoop) {
@@ -353,39 +361,43 @@ public class SystemX extends OpMode {
                 break;
                 
             case _RedFar:
-                if(readyLoop) {
+              //  if(readyLoop) {
+                    pp6CycleRedFar.init();
+                    pp6CycleRedFar.init_loop();
                     choosenAuton = "Red Far";
                     //currentStage = stage._100_end;
-                }
+               // }
                 
 
                 break;
 
             case _RedNear:
-                if(readyLoop) {
+                //if(readyLoop) {
                     ppNearRed6.init();
                     ppNearRed6.init_loop();
                     choosenAuton = "Red Near";
-                }
+               // }
                 //currentStage = stage._100_end;
 
                 break;
 
             case _BlueFar:
-                if(readyLoop) {
+               // if(readyLoop) {
                     pp6CycleBlueFar.init();
                     pp6CycleBlueFar.init_loop();
                     choosenAuton = "Blue Far";
-                }
+              //  }
                 //currentStage = stage._100_end;
 
                 break;
 
             case _BlueNear:
-                if(readyLoop) {
+                //if(readyLoop) {
+                    ppNearBlue6.init();
+                    ppNearBlue6.init_loop();
                     choosenAuton = "Blue Near";
                     //currentStage = stage._100_end;
-                }
+               // }
 
                 break;
 /*
@@ -485,12 +497,13 @@ public class SystemX extends OpMode {
  */
 
             case _100_end:
-                readyLoop = false;
+                //readyLoop = false;
                 //if (!follower.isBusy()) {        p
                    // telemetryMU.addData("Drive Complete?", follower.isBusy());   p
                 //}           p
                 break;
 }
+/*
 if(!Auton) {
     if (goToFarLaunch) {
         if (robot.trapezoidAutoAim.CurrentTurretColor == TrapezoidAutoAim.TurretColor.Red) {
@@ -506,7 +519,7 @@ if(!Auton) {
 
         if(!Auton) {
             if (goToPickTunnel) {
-                if (robot.trapezoidAutoAim.CurrentTurretColor == TrapezoidAutoAim.TurretColor.Red) {
+                if (robot.trapezoidAutoAim.CurrentTurretColor == TrapezoidAutoAim.TurretColor.Blue) {
                     follower.followPath(doPickupBT, false);
 
                 } else {
@@ -517,8 +530,15 @@ if(!Auton) {
             }
         }
 
-        if(CurrentAuto == Auto.RedFar){
+ */
 
+        if(CurrentAuto == Auto.RedFar){
+            if(pp6CycleRedFar.End){
+                pp6CycleRedFar.stop();
+                currentStage = stage._100_end;
+            }else {
+                pp6CycleRedFar.loop();
+            }
         }else if(CurrentAuto == Auto.RedNear){
             if(ppNearRed6.End){
                 ppNearRed6.stop();
@@ -533,9 +553,13 @@ if(!Auton) {
             }else {
                 pp6CycleBlueFar.loop();
             }
-
         }else if(CurrentAuto == Auto.BlueNear){
-
+            if(ppNearBlue6.End){
+                ppNearBlue6.stop();
+                currentStage = stage._100_end;
+            }else {
+                ppNearBlue6.loop();
+            }
         }else{
 
         }
