@@ -170,7 +170,7 @@ public class ppNearRed6 extends OpMode {
 
                  break;
             case _30_Spike1:
-                if (robot.sensors.NoBalls || runtime.milliseconds() >= 1000) {
+                if (robot.sensors.NoArtifacts || runtime.milliseconds() >= 1000) {
                     endlaunch_process();
                     follower.followPath(spikeR2);
                     telemetryMU.addData("Cornor pickup", follower.getPose());
@@ -192,7 +192,7 @@ public class ppNearRed6 extends OpMode {
                 break;
 
             case _50_Spike2:
-                if(robot.sensors.NoBalls || runtime.milliseconds() >= 1000){
+                if(robot.sensors.NoArtifacts || runtime.milliseconds() >= 1000){
                     endlaunch_process();
                     follower.followPath(spikeR1); //change to new
                     currentStage = stage._60_DrivetoLaunch1b;
