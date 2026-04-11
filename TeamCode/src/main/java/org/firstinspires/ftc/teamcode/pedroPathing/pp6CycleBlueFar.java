@@ -341,7 +341,7 @@ public class pp6CycleBlueFar extends OpMode {
         //telemetryMU.addData("scorePose", scorePoseAP);
         if (follower.isBusy()) { //we are still running path
 //telemetryMU.addData("check intake status", robot.intake.AtIntakeStop); intake.AtIntakeStop is never set to false
-            if (robot.sensors.bothFilled) {
+            if (robot.sensors.allFilled) {
                 telemetryMU.addLine("Intake stopped - break follower");
                 // we've got 3 artifacts, stop the path and return to scorePose
                 follower.breakFollowing();
@@ -359,13 +359,6 @@ public class pp6CycleBlueFar extends OpMode {
             robot.autoRPM.Measure = true;
             currentStage = NextStage;
         }
-
-
-
-
-
-
-
 
     }
 

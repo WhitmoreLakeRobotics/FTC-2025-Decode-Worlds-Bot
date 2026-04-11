@@ -30,7 +30,7 @@ public RevColorSensorV3 NTKAP3;
     public ColorRangeSensor NTKAP1;
     public ColorRangeSensor NTKAP2;
     public ColorRangeSensor Plate;
-    public boolean bothFilled = false;
+    public boolean allFilled = false;
     private boolean sensorStable = false;
     //private Mode CurrentMode = Mode.STOP;
     public boolean NoBalls = false;
@@ -205,7 +205,7 @@ public RevColorSensorV3 NTKAP3;
                             CurrentDistance2 == Distance2.FILLED2 &&
                             CurrentDistance3 == Distance3.FILLED3   //  && bNTKAP1detect
                     ){
-                        bothFilled = true;
+                        allFilled = true;
                     }
 
 
@@ -221,8 +221,8 @@ public RevColorSensorV3 NTKAP3;
 
     }
 
-    public boolean getBothFilled(){
-        return bothFilled;
+    public boolean getAllFilled(){
+        return allFilled;
 
     }
 
@@ -242,7 +242,7 @@ public RevColorSensorV3 NTKAP3;
         CurrentDistance1 = Distance1.MISSING1;
         CurrentDistance2 = Distance2.MISSING2;
         CurrentDistance3 = Distance3.MISSING3;
-        bothFilled = false;
+        allFilled = false;
     }
 
 

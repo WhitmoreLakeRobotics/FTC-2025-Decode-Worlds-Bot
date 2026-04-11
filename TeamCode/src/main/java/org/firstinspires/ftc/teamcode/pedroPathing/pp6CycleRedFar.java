@@ -14,14 +14,16 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.Common.CommonLogic;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
-//Verity + Rory
-@Autonomous(name = "ppNearRed6", group = "PP")
-public class ppNearRed6 extends OpMode {
+@Autonomous(name = "pp6CycleRedFar", group = "PP")
+public class pp6CycleRedFar extends OpMode {
+
 
     Robot robot = new Robot();
 
+//tristan and wyatt's fail of an auton (with assistance)
 
     private String thisUpdate = "0";
     private TelemetryManager telemetryMU;
@@ -32,28 +34,26 @@ public class ppNearRed6 extends OpMode {
 
 
     public static Follower follower;
-    public Pose currentPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(follower.getPose().getHeading()));
-
-    public static Pose startPose = new Pose(110, 135, Math.toRadians(0)); // Start Pose of our robot.
-    public static Pose scorePose = new Pose(96, 96, Math.toRadians(50)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    public static Pose startPose = new Pose(88, 8, Math.toRadians(90)); // Start Pose of our robot.
+    public static Pose scorePose = new Pose(82, 17, Math.toRadians(66)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     //private final Pose scorePose = new Pose(wallScoreX, wallScoreY, wallScoreH); // seeing if configurables work for this. Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     public static Pose scorePoseAP = new Pose(20, 20, Math.toRadians(10));
-    public static Pose pickup1aPose = new Pose(120, 80, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
-    public static Pose pickup1bPose = new Pose(120, 60, Math.toRadians(190)); // (First Set) of Artifacts picked up.
-    public static Pose pickupgatePose = new Pose(140, 50, Math.toRadians(200));
-    public static Pose pickup1cPose = new Pose(120, 40, Math.toRadians(180));
-    public static Pose spikeR2start = new Pose (110,60,Math.toRadians(-90));
-    public static Pose spikeR2end = new Pose (128,63,Math.toRadians(-90)); // was 130 60
-    public static Pose spikeR1start = new Pose (110,84,Math.toRadians(-90));
-    public static Pose spikeR1end = new Pose (128,77,Math.toRadians(-90)); // was 130 84
-    //public static Pose spikeR3start = new Pose (110,36,Math.toRadians(-90));
-   // public static Pose spikeR3end = new Pose (130,36,Math.toRadians(-90));
-   // public static Pose Rcorner = new Pose(11.3,8.9,Math.toRadians(190));
+    public static Pose pickup1aPose = new Pose(25, 25, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
+    public static Pose pickup1bPose = new Pose(20, 20, Math.toRadians(190)); // (First Set) of Artifacts picked up.
+    public static Pose pickup1bPoseC = new Pose(1, 27, Math.toRadians(200));
+    public static Pose pickup1cPose = new Pose(4, 13.5, Math.toRadians(180));
+    public static Pose currentPose  = new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(follower.getPose().getHeading()));
+    //public static Pose spikeB2start = new Pose (35,60,Math.toRadians(90));
+    //public static Pose spikeB2end = new Pose (15,60,Math.toRadians(90));
+    public static Pose CornerPickupPose = new Pose (135,8,Math.toRadians(0));
+    public static Pose spikeR2start = new Pose (110,60,Math.toRadians(0));
+    public static Pose spikeR2end = new Pose (130,60,Math.toRadians(0));
+
 
 
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
-    private PathChain cyclePickup1, interruptedPickup, spikeR2, spikeR1;
+    private PathChain cyclePickup1, interruptedPickup, CornerPickup, Park, spikeR2;
 
 
     public void buildPaths() {
@@ -68,10 +68,29 @@ public class ppNearRed6 extends OpMode {
                 .setLinearHeadingInterpolation(pickup1bPose.getHeading(), scorePose.getHeading())
 
                 .build();
-
         scorePreload = follower.pathBuilder()
-                .addPath(new BezierLine(startPose, scorePose))
-                .setLinearHeadingInterpolation(startPose.getHeading(),scorePose.getHeading())
+                .addPath (new BezierLine(startPose, scorePose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
+                .build();
+/*
+        spikeB2 = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, spikeB2start))
+                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeB2start.getHeading())
+                .addPath (new BezierLine(spikeB2start,spikeB2end))
+                .setLinearHeadingInterpolation(spikeB2start.getHeading(), spikeB2end.getHeading())
+                .build();
+
+ */
+
+        CornerPickup = follower.pathBuilder()
+                .addPath (new BezierLine(scorePose, CornerPickupPose))
+                .setLinearHeadingInterpolation(scorePose.getHeading(), CornerPickupPose.getHeading())
+                .addPath (new BezierLine(CornerPickupPose, scorePose))
+                .setLinearHeadingInterpolation(CornerPickupPose.getHeading(), scorePose.getHeading())
+                .build();
+
+        Park = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, CornerPickupPose))
                 .build();
 
         spikeR2 = follower.pathBuilder()
@@ -81,16 +100,6 @@ public class ppNearRed6 extends OpMode {
                 .addPath (new BezierLine(spikeR2start,spikeR2end))
                 .setLinearHeadingInterpolation(spikeR2start.getHeading(), spikeR2end.getHeading())
                 .build();
-
-        spikeR1 = follower.pathBuilder()
-                .addPath(new BezierLine(currentPose, spikeR1start))
-                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeR1start.getHeading())
-
-                .addPath (new BezierLine(spikeR1start,spikeR1end))
-                .setLinearHeadingInterpolation(spikeR1start.getHeading(), spikeR1end.getHeading())
-                .build();
-
-
 
     }
 
@@ -147,72 +156,128 @@ public class ppNearRed6 extends OpMode {
                 break;
 
             case _10_preStart:
-                currentStage = stage._20_Prelaunch;
+                currentStage = stage._20_PreLaunch;
                 break;
 
-            case _20_Prelaunch:
+            case _20_PreLaunch:
+                if (!follower.isBusy()) {
+                    follower.followPath(scorePreload,  true);
+                    //lastPose = startPose;
+                    /* currentTargetPose = scorePose;*/
+                    // follower.update();
+                 robot.autoRPM.Measure = true;
+                    currentStage = stage._30_ScorePreload;
+                }
+
+                break;
+
+            case _30_ScorePreload:
+                if (!follower.isBusy()) {
+                    dolaunch_process();
+                    currentStage = stage._40_PickupSpike1;
+                }
+                break;
+            case _40_PickupSpike1:
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                    endlaunch_process();
+                follower.followPath(cyclePickup1);
+                    currentStage = stage._45_PreLaunch2;
+                }
+                break;
+            case _45_PreLaunch2:
+               AreYouSure(stage._50_Launch2);
+
+                break;
+            case _50_Launch2:
+                if (!follower.isBusy()) {
+                   dolaunch_process();
+
+
+                    currentStage = stage._60_PickupConer1;
+                }
+                break;
+            case _60_PickupConer1:
+                if (!follower.isBusy()) {
+                    if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                        endlaunch_process();
+                        follower.followPath(CornerPickup);
+                        currentStage = stage._70_PreLaunch3;
+                    }
+                }
+                break;
+            case _70_PreLaunch3:
+                AreYouSure(stage._75_Launch3);
+                break;
+
+
+            case _75_Launch3:
+                if (!follower.isBusy()) {
+                    dolaunch_process();
+                    currentStage = stage._80_PickupSpike2;
+                }
+                break;
+            case _80_PickupSpike2:
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                    endlaunch_process();
+                follower.followPath(spikeR2);
+
+                    currentStage = stage._90_PreLaunch4;
+                }
+                break;
+            case _90_PreLaunch4:
+              AreYouSure(stage._100_Launch4);
+                break;
+            case _100_Launch4:
+                if (!follower.isBusy()) {
+                    dolaunch_process();
+                    currentStage = stage._110_PickupCorner2;
+                }
+                break;
+            case _110_PickupCorner2:
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
+                endlaunch_process();
                     if (!follower.isBusy()) {
-                        follower.followPath(scorePreload, true);
-                        robot.autoRPM.Measure = true;
+                        follower.followPath(CornerPickup);
 
+                    }
 
-                        // follower.update();
-
-                    currentStage = stage._25_ScorePrelaunch;
+                    currentStage = stage._120_Prelaunch5;
                 }
-
                 break;
-            case _25_ScorePrelaunch:
-                if (!follower.isBusy()){
+            case _120_Prelaunch5:
+               AreYouSure(stage._130_Launch5);
+                break;
+
+
+            case _130_Launch5:
+                if (!follower.isBusy()) {
                     dolaunch_process();
-                    currentStage = stage._30_Spike1;
+                    currentStage = stage._140_PickupCorner6;
                 }
-
-                 break;
-            case _30_Spike1:
-                if (robot.sensors.NoBalls || runtime.milliseconds() >= 1000) {
+                break;
+            case _140_PickupCorner6:
+                if (runtime.milliseconds() > 500 || robot.sensors.NoBalls) { //add sensors here
                     endlaunch_process();
-                    follower.followPath(spikeR2);
-                    telemetryMU.addData("Cornor pickup", follower.getPose());
-                    currentStage = stage._35_DrivetoLaunch1a;
+                    currentStage = stage._150_PreLaunch6;
                 }
+            case _150_PreLaunch6:
+              AreYouSure(stage._160_Launch6);
                 break;
 
-            case _35_DrivetoLaunch1a:
-                if(follower.isBusy()){
-                    AreYouSure(stage._40_Launch1);
-                }
-                break;
 
-            case _40_Launch1:
-                if(!follower.isBusy()){
-                  dolaunch_process();
-                  currentStage = stage._50_Spike2;
-                }
-                break;
-
-            case _50_Spike2:
-                if(robot.sensors.NoBalls || runtime.milliseconds() >= 1000){
-                    endlaunch_process();
-                    follower.followPath(spikeR1); //change to new
-                    currentStage = stage._60_DrivetoLaunch1b;
-                }
-                break;
-
-            case _60_DrivetoLaunch1b:
-                if(follower.isBusy()){
-                    AreYouSure(stage._65_Launch2);
-                }
-                break;
-
-            case _65_Launch2:
-                if(!follower.isBusy()){
+            case _160_Launch6:
+                if (!follower.isBusy()) {
                     dolaunch_process();
-                    currentStage = stage._1000_end;
+                    currentStage = stage._170_ParkToBeContinued;
                 }
                 break;
-
-            case _1000_end:
+            case _170_ParkToBeContinued:
+                if (!follower.isBusy()) {
+                  follower.followPath(Park);
+                    currentStage = stage._200_end;
+                }
+                break;
+            case _200_end:
                 if (!follower.isBusy()) {
                     telemetryMU.addData("Drive Complete?", follower.isBusy());
                     stop();
@@ -224,6 +289,7 @@ public class ppNearRed6 extends OpMode {
 
 
         }
+        CommonLogic.StartEndPose = follower.getPose();
 
     }
 
@@ -232,31 +298,34 @@ public class ppNearRed6 extends OpMode {
     @Override
     public void stop () {
         //super.stop();
+
+        CommonLogic.StartEndPose = follower.getPose();
         robot.stop();
     }
     private enum stage {
 
         _00_unknown,
         _10_preStart,
-        _20_Prelaunch,
-        _25_ScorePrelaunch,
-        _30_Spike1,
-        _35_DrivetoLaunch1a,
-        _40_Launch1,
-        _50_Spike2,
-        _60_DrivetoLaunch1b,
-        _65_Launch2,
-        _70_Spike3,
-        _80_DrivetoLaunch1c,
-        _90_Launch3,
-        _100_Gatepos1,
-        _110_PickupGate1,
-        _120_DrivetoLaunch2a,
-        _125_Launch4,
-        _130_Tunnelpickup,
-        _160_Launch5,
-        _170_,
-        _1000_end;
+        _20_PreLaunch,
+        _30_ScorePreload,
+        _40_PickupSpike1,
+        _42_,
+        _45_PreLaunch2,
+        _50_Launch2,
+        _60_PickupConer1,
+        _70_PreLaunch3,
+        _75_Launch3,
+        _80_PickupSpike2,
+        _90_PreLaunch4,
+        _100_Launch4,
+        _110_PickupCorner2,
+        _120_Prelaunch5,
+        _130_Launch5,
+        _140_PickupCorner6,
+        _150_PreLaunch6,
+        _160_Launch6,
+        _170_ParkToBeContinued,
+        _200_end;
 
 
     }
@@ -278,7 +347,7 @@ public class ppNearRed6 extends OpMode {
 
     }
 
-    private void AreYouSure(stage NextStage) {
+    private void AreYouSure(stage NextStage){
 
         //telemetryMU.addData("pathPose2", pickup1bPose);
         //telemetryMU.addData("scorePose", scorePoseAP);
@@ -302,8 +371,8 @@ public class ppNearRed6 extends OpMode {
             robot.autoRPM.Measure = true;
             currentStage = NextStage;
         }
-    }
 
+    }
 
     private void updateTelemetry () {
         telemetryMU.addData("Follower Busy?", follower.isBusy());
@@ -331,14 +400,13 @@ public class ppNearRed6 extends OpMode {
         Drawing.drawDebug(follower);
     }
 
-    private void newPath(){
+    private  void newPath(){
         interruptedPickup = follower.pathBuilder()
-                .addPath (new BezierLine(currentPose, scorePose))
-                .setLinearHeadingInterpolation(currentPose.getHeading(), scorePose.getHeading())
+                .addPath (new BezierLine(follower.getPose(), scorePose))
+                .setLinearHeadingInterpolation(startPose.getHeading(), scorePose.getHeading())
                 .build();
         follower.followPath(interruptedPickup,true);
 
     }
-
 
 }

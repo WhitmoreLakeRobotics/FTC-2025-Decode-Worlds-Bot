@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.pedroPathing;
 
-import static org.firstinspires.ftc.teamcode.pedroPathing.CompBotConstants.pathConstraints;
-
 import com.bylazar.configurables.PanelsConfigurables;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.BezierCurve;
 import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
@@ -14,7 +11,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.firstinspires.ftc.teamcode.Hardware.Lighting;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 @Autonomous(name = "ppAutonTesting", group = "PP")
@@ -184,7 +180,7 @@ telemetryMU.addData("start cyclepath", follower.getCurrentPathChain());
                 telemetryMU.addData("scorePose", scorePoseAP);
                 if (follower.isBusy()) { //we are still running path
 //telemetryMU.addData("check intake status", robot.intake.AtIntakeStop); intake.AtIntakeStop is never set to false
-                    if (robot.sensors.bothFilled) {
+                    if (robot.sensors.allFilled) {
                         telemetryMU.addLine("Intake stopped - break follower");
                        // we've got 3 artifacts, stop the path and return to scorePose
                         follower.breakFollowing();

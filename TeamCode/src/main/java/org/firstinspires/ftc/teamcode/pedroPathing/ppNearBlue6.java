@@ -17,8 +17,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.teamcode.Hardware.Robot;
 
 //Verity + Rory
-@Autonomous(name = "ppNearRed6", group = "PP")
-public class ppNearRed6 extends OpMode {
+@Autonomous(name = "ppNearBlue6", group = "PP")
+public class ppNearBlue6 extends OpMode {
 
     Robot robot = new Robot();
 
@@ -34,18 +34,22 @@ public class ppNearRed6 extends OpMode {
     public static Follower follower;
     public Pose currentPose = new Pose(follower.getPose().getX(), follower.getPose().getY(), Math.toRadians(follower.getPose().getHeading()));
 
-    public static Pose startPose = new Pose(110, 135, Math.toRadians(0)); // Start Pose of our robot.
-    public static Pose scorePose = new Pose(96, 96, Math.toRadians(50)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
+    public static Pose startPose = new Pose(34, 135, Math.toRadians(-180)); // Start Pose of our robot.
+    public static Pose scorePose = new Pose(48, 96, Math.toRadians(140)); // Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     //private final Pose scorePose = new Pose(wallScoreX, wallScoreY, wallScoreH); // seeing if configurables work for this. Scoring Pose of our robot. It is facing the goal at a 135 degree angle.
     public static Pose scorePoseAP = new Pose(20, 20, Math.toRadians(10));
     public static Pose pickup1aPose = new Pose(120, 80, Math.toRadians(180)); // Highest (First Set) of Artifacts from the Spike Mark.
     public static Pose pickup1bPose = new Pose(120, 60, Math.toRadians(190)); // (First Set) of Artifacts picked up.
     public static Pose pickupgatePose = new Pose(140, 50, Math.toRadians(200));
     public static Pose pickup1cPose = new Pose(120, 40, Math.toRadians(180));
-    public static Pose spikeR2start = new Pose (110,60,Math.toRadians(-90));
-    public static Pose spikeR2end = new Pose (128,63,Math.toRadians(-90)); // was 130 60
-    public static Pose spikeR1start = new Pose (110,84,Math.toRadians(-90));
-    public static Pose spikeR1end = new Pose (128,77,Math.toRadians(-90)); // was 130 84
+   // public static Pose spikeR2start = new Pose (110,60,Math.toRadians(-90));
+   // public static Pose spikeR2end = new Pose (128,63,Math.toRadians(-90)); // was 130 60
+   // public static Pose spikeR1start = new Pose (110,84,Math.toRadians(-90));
+   // public static Pose spikeR1end = new Pose (128,77,Math.toRadians(-90));// was 130 84
+    public static Pose spikeB1start = new Pose (35,84,Math.toRadians(180));
+    public static Pose spikeB1end = new Pose (17,77,Math.toRadians(180)); // was 15 84
+    public static Pose spikeB2start = new Pose (35,60,Math.toRadians(180));
+    public static Pose spikeB2end = new Pose (17,63,Math.toRadians(180)); // was 15 60
     //public static Pose spikeR3start = new Pose (110,36,Math.toRadians(-90));
    // public static Pose spikeR3end = new Pose (130,36,Math.toRadians(-90));
    // public static Pose Rcorner = new Pose(11.3,8.9,Math.toRadians(190));
@@ -53,7 +57,7 @@ public class ppNearRed6 extends OpMode {
 
     private PathChain scorePreload;
     private PathChain grabPickup1, grabPickup1a, grabPickup1b, grabPickup1c, scorePickup1, grabPickup2a, grabPickup2b, scorePickup2, goEndPose, goEndPose2, endPath;
-    private PathChain cyclePickup1, interruptedPickup, spikeR2, spikeR1;
+    private PathChain cyclePickup1, interruptedPickup, spikeB2, spikeB1;
 
 
     public void buildPaths() {
@@ -74,20 +78,20 @@ public class ppNearRed6 extends OpMode {
                 .setLinearHeadingInterpolation(startPose.getHeading(),scorePose.getHeading())
                 .build();
 
-        spikeR2 = follower.pathBuilder()
-                .addPath(new BezierLine(currentPose, spikeR2start))
-                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeR2start.getHeading())
+        spikeB1 = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, spikeB1start))
+                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeB1start.getHeading())
 
-                .addPath (new BezierLine(spikeR2start,spikeR2end))
-                .setLinearHeadingInterpolation(spikeR2start.getHeading(), spikeR2end.getHeading())
+                .addPath (new BezierLine(spikeB1start,spikeB1end))
+                .setLinearHeadingInterpolation(spikeB1start.getHeading(), spikeB1end.getHeading())
                 .build();
 
-        spikeR1 = follower.pathBuilder()
-                .addPath(new BezierLine(currentPose, spikeR1start))
-                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeR1start.getHeading())
+        spikeB2 = follower.pathBuilder()
+                .addPath(new BezierLine(currentPose, spikeB2start))
+                .setLinearHeadingInterpolation(currentPose.getHeading(), spikeB2start.getHeading())
 
-                .addPath (new BezierLine(spikeR1start,spikeR1end))
-                .setLinearHeadingInterpolation(spikeR1start.getHeading(), spikeR1end.getHeading())
+                .addPath (new BezierLine(spikeB2start,spikeB2end))
+                .setLinearHeadingInterpolation(spikeB2start.getHeading(), spikeB2end.getHeading())
                 .build();
 
 
@@ -172,7 +176,7 @@ public class ppNearRed6 extends OpMode {
             case _30_Spike1:
                 if (robot.sensors.NoBalls || runtime.milliseconds() >= 1000) {
                     endlaunch_process();
-                    follower.followPath(spikeR2);
+                    follower.followPath(spikeB2);
                     telemetryMU.addData("Cornor pickup", follower.getPose());
                     currentStage = stage._35_DrivetoLaunch1a;
                 }
@@ -194,7 +198,7 @@ public class ppNearRed6 extends OpMode {
             case _50_Spike2:
                 if(robot.sensors.NoBalls || runtime.milliseconds() >= 1000){
                     endlaunch_process();
-                    follower.followPath(spikeR1); //change to new
+                    follower.followPath(spikeB1); //change to new
                     currentStage = stage._60_DrivetoLaunch1b;
                 }
                 break;

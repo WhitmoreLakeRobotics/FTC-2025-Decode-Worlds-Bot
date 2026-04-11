@@ -31,6 +31,7 @@ public class Turret extends BaseHardware {
 
     private double currentPosition = 0.0;
     public boolean ableToAim = true;
+    private int milliDeg = 50;
 
     // limits
     private final double MIN_DEG = -170;
@@ -103,6 +104,8 @@ public class Turret extends BaseHardware {
     @Override
     public void loop() {
 
+
+
         // DRIVER OVERRIDE LOGIC — MJD
 
         double stick = 0; // Replace with joystick input when integrated — MJD
@@ -160,33 +163,45 @@ public class Turret extends BaseHardware {
 
     }
 
+    /*
+    public void cmdCRLeft(){
+        if(trapezoidAutoAim.runtime.milliseconds() <= milliDeg) {
+            rightyTighty.setPosition(0.25);
+            leftyLoosy.setPosition(0.25);
+            currentPosition = currentPosition + 1;
+            trapezoidAutoAim.runtime.reset();
+        }
+    }
+
+     */
+
     public void cmdLeft() {
-        rightyTighty.setPosition(0.25);
-        leftyLoosy.setPosition(0.25);
-        currentPosition = currentPosition + 1;
+        rightyTighty.setPosition(rightyTighty.getPosition() - 0.002778); //maybe 0.000926
+        leftyLoosy.setPosition(leftyLoosy.getPosition() - 0.002778);
+        currentPosition = currentPosition - 1;
         trapezoidAutoAim.runtime.reset();
     }
     public void cmdRight() {
-        rightyTighty.setPosition(-0.25);
-        leftyLoosy.setPosition(-0.25);
-        currentPosition = currentPosition - 1;
+        rightyTighty.setPosition(rightyTighty.getPosition() + 0.002778);
+        leftyLoosy.setPosition(leftyLoosy.getPosition() + 0.002778);
+        currentPosition = currentPosition + 1;
         trapezoidAutoAim.runtime.reset();
     }
 
     public void cmdLeftFar() {
-        rightyTighty.setPosition(0.75);
-        leftyLoosy.setPosition(0.75);
-        currentPosition = currentPosition + 3;
-        trapezoidAutoAim.runtime.reset();
-    }
-    public void cmdRightFar() {
-        rightyTighty.setPosition(-0.75);
-        leftyLoosy.setPosition(-0.75);
+        rightyTighty.setPosition(rightyTighty.getPosition() - 0.008334); //maybe 0.002778
+        leftyLoosy.setPosition(leftyLoosy.getPosition() - 0.008334);
         currentPosition = currentPosition - 3;
         trapezoidAutoAim.runtime.reset();
     }
+    public void cmdRightFar() {
+        rightyTighty.setPosition(rightyTighty.getPosition() + 0.008334);
+        leftyLoosy.setPosition(leftyLoosy.getPosition() + 0.008334);
+        currentPosition = currentPosition + 3;
+        trapezoidAutoAim.runtime.reset();
+    }
 
-    /*
+
     public void cmdTurn(int targetPosition, double turretSpeed){
 
         if(targetPosition > currentPosition){
@@ -205,7 +220,7 @@ public class Turret extends BaseHardware {
             cmdNo();
         }
 
-        if(!CommonLogic.inRange(currentPosition, targetPosition, 1)){
+        if(!CommonLogic.inRange(currentPosition, targetPosition, 1)){ //can be 0.5
             if(CommonLogic.inRange(currentPosition, targetPosition, 10)){
                 ableToAim = false;
                 cmdTurn(targetPosition, turretSpeed - (turretSpeed * 0.1));
@@ -220,7 +235,7 @@ public class Turret extends BaseHardware {
         }
     }
 
-     */
+
 
 
 
