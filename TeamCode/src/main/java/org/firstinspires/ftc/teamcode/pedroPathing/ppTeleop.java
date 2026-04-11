@@ -257,7 +257,8 @@ public class ppTeleop extends OpMode {
         }
         if (CommonLogic.oneShot(gamepad1.back, gp1_prev_back)) {
             //Initialize Gyro
-            robot.driveTrain.ResetGyro();
+            //robot.driveTrain.ResetGyro();
+            follower.setStartingPose(follower.getPose());
             tHeading = 0;
         }
 
