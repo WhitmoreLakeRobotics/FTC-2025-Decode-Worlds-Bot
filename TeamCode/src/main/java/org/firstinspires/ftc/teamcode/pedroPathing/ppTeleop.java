@@ -234,8 +234,8 @@ public class ppTeleop extends OpMode {
             }
             follower.setTeleOpDrive(
                     CommonLogic.joyStickMath(gamepad1.left_stick_y * -1), //naj added joystick math
-                    CommonLogic.joyStickMath(gamepad1.left_stick_x),
-                    CommonLogic.joyStickMath(gamepad1.right_stick_x),
+                    CommonLogic.joyStickMath(gamepad1.left_stick_x * -1),
+                    CommonLogic.joyStickMath(gamepad1.right_stick_x * -1),
                     false
 
             );
