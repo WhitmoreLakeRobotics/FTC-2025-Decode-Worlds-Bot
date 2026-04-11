@@ -4,6 +4,7 @@ import android.transition.Transition;
 
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -31,12 +32,14 @@ public class TransitionRoller extends BaseHardware{
     }
 
     private DcMotorEx TRM01;
+    private CRServo TRSer1;
     private double TRPower;
     public Telemetry telemetry = null;
 
     public final double minPower = -1.0;
     public final double maxPower = 1.0;
 
+    public static final double TRserSpeed = 1.0;
     public static final double TRSpeed = 0.85;   //change back later
     public static final double stopSpeed = 0.0;
      static final double TRBack = -0.5;
@@ -67,6 +70,7 @@ public class TransitionRoller extends BaseHardware{
      public void init(){
 
          TRM01 = hardwareMap.get(DcMotorEx.class,"TRM01");
+         TRSer1 = hardwareMap.get(CRServo.class,"TRSer1");
          CurrentMode = Mode.Stop;
 
      }
@@ -121,17 +125,20 @@ public class TransitionRoller extends BaseHardware{
      public void cmdStop(){
          CurrentMode = Mode.Stop;
          TRM01.setPower (stopSpeed);
+         TRSer1.setPower(stopSpeed);
      }
 
      public void cmdSpin() {
          CurrentMode = Mode.Spin;
          TRM01.setPower(TRSpeed);
+         TRSer1.setPower(TRserSpeed);
          runtime.reset();
      }
 
      public void cmdBack() {
          CurrentMode = Mode.Back;
          TRM01.setPower(TRBack);
+         TRSer1.setPower(TRBack);
      }
 
     public enum Mode {

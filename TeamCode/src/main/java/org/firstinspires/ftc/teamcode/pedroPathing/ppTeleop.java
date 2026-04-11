@@ -187,7 +187,7 @@ public class ppTeleop extends OpMode {
                  */
 
               //  follower.turnTo(tHeading);
-                follower.turnToDegrees(tHeading);
+                follower.turnTo(Math.toRadians(tHeading));
 
             } else if (gamepad1.left_bumper) {
                /* robot.driveTrain.cmdTeleOp(CommonLogic.joyStickMath(gamepad1.left_stick_y * -1),
@@ -195,7 +195,7 @@ public class ppTeleop extends OpMode {
                         robot.driveTrain.autoTurn(tHeading), robot.driveTrain.DTrain_SLOWSPEED);
 
                 */
-                follower.turnToDegrees(tHeading);
+                follower.turnTo(Math.toRadians(tHeading));
                 follower.setMaxPower(SnailSpeed);
             } else {
 
@@ -204,7 +204,7 @@ public class ppTeleop extends OpMode {
                         robot.driveTrain.autoTurn(tHeading), robot.driveTrain.DTrain_NORMALSPEED);
 
                 */
-                follower.turnToDegrees(tHeading);
+                follower.turnTo(Math.toRadians(tHeading));
                 follower.setMaxPower(NormalSpeed);
             }
         } else {
@@ -329,7 +329,7 @@ public class ppTeleop extends OpMode {
         //***********   Gamepad 2 controls ********
 
         // Bumpers close and open the gripper
-        if (( gamepad2.left_bumper == true)) {
+        if (( gamepad2.left_bumper)) {
 
             LaunchTelleTouch();
 
@@ -339,7 +339,7 @@ public class ppTeleop extends OpMode {
 
 
         }
-        if (gamepad2.right_bumper == true) {
+        if (gamepad2.right_bumper) {
             LaunchNear();
         }
 
