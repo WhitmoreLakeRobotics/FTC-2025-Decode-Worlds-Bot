@@ -176,26 +176,26 @@ public class Turret extends BaseHardware {
      */
 
     public void cmdLeft() {
-        rightyTighty.setPosition(rightyTighty.getPosition() - 0.002778); //maybe 0.000926
+        rightyTighty.setPosition(rightyTighty.getPosition() + 0.002778); //maybe 0.000926
         leftyLoosy.setPosition(leftyLoosy.getPosition() - 0.002778);
         currentPosition = currentPosition - 1;
         trapezoidAutoAim.runtime.reset();
     }
     public void cmdRight() {
-        rightyTighty.setPosition(rightyTighty.getPosition() + 0.002778);
+        rightyTighty.setPosition(rightyTighty.getPosition() - 0.002778);
         leftyLoosy.setPosition(leftyLoosy.getPosition() + 0.002778);
         currentPosition = currentPosition + 1;
         trapezoidAutoAim.runtime.reset();
     }
 
     public void cmdLeftFar() {
-        rightyTighty.setPosition(rightyTighty.getPosition() - 0.008334); //maybe 0.002778
+        rightyTighty.setPosition(rightyTighty.getPosition() + 0.008334); //maybe 0.002778
         leftyLoosy.setPosition(leftyLoosy.getPosition() - 0.008334);
         currentPosition = currentPosition - 3;
         trapezoidAutoAim.runtime.reset();
     }
     public void cmdRightFar() {
-        rightyTighty.setPosition(rightyTighty.getPosition() + 0.008334);
+        rightyTighty.setPosition(rightyTighty.getPosition() - 0.008334);
         leftyLoosy.setPosition(leftyLoosy.getPosition() + 0.008334);
         currentPosition = currentPosition + 3;
         trapezoidAutoAim.runtime.reset();
@@ -208,12 +208,12 @@ public class Turret extends BaseHardware {
         driverOverride = true;
             currentPosition = currentPosition - (turretSpeed * 4.0);
             rightyTighty.setPosition(turretSpeed);
-            leftyLoosy.setPosition(turretSpeed);
+            leftyLoosy.setPosition(-turretSpeed);
            // cmdTurn(targetPosition, turretSpeed); // turret speed - 0.25 so slows down as gets closer to target
         }else if(targetPosition < currentPosition){
          driverOverride = true;
             currentPosition = currentPosition + (turretSpeed * 4.0);
-            rightyTighty.setPosition(turretSpeed);
+            rightyTighty.setPosition(-turretSpeed);
             leftyLoosy.setPosition(turretSpeed);
            // cmdTurn(targetPosition, turretSpeed);
         }else{

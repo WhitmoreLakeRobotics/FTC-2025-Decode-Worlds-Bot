@@ -10,7 +10,7 @@ public class LiftOff {
     public HardwareMap hardwareMap = null;// will be set in Child class
 
     public Mode CurrentMode;
-    public Servo Thruster;
+    //public Servo Thruster;
     public boolean UP = false;
 
     public static final double LiftOff = 1.0;
@@ -35,7 +35,7 @@ public class LiftOff {
 
 
 
-        Thruster = hardwareMap.get(Servo.class, "Thruster");
+        //Thruster = hardwareMap.get(Servo.class, "Thruster");
 
     }
 
@@ -82,7 +82,7 @@ public class LiftOff {
 
     public void cmdUp(){
         CurrentMode = Mode.UP;
-        Thruster.setPosition(LiftOff);
+        //Thruster.setPosition(LiftOff);
         UP = true;
     }
 
@@ -92,7 +92,7 @@ public class LiftOff {
 
     public void cmdStop(){
         CurrentMode = Mode.STOP;
-        Thruster.setPosition(Stop);
+        //Thruster.setPosition(Stop);
         UP = false;
     }
 
