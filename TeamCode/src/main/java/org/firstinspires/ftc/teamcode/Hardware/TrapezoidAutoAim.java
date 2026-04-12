@@ -9,10 +9,10 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply with standard baseHardware class
 
-    private Limey limey;
+    public Limey limey;
     // private Turret turret;
-    private DriveTrain driveTrain;
-   // private Robot robot;
+    public DriveTrain driveTrain;
+   //private Robot robot;
 
     public TurretColor CurrentTurretColor;
     public Mode CurrentMode;
@@ -25,7 +25,7 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
     public boolean JackHappy = false;
     public static double heading = 0;
 
-    private  Robot robot;
+    public Robot robot;
 
     /*
     public TrapezoidAutoAim(Limey limey,DriveTrain driveTrain, Telemetry telemetry,HardwareMap hardwareMap){
@@ -62,6 +62,8 @@ public class TrapezoidAutoAim extends BaseHardware{ // naj added this to comply 
     public void loop(){
         //runtime.log("Position");
         //limey.getTx();
+        if (robot == null || robot.limey == null)return;
+        if (driveTrain == null)return;
 
         if(robot.limey == null) return;
         if(driveTrain == null) return;

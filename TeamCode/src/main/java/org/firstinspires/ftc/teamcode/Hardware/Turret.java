@@ -144,8 +144,8 @@ public class Turret extends BaseHardware {
             double pos = (currentAngle - MIN_DEG) / (MAX_DEG - MIN_DEG);
             pos = clamp(pos, MIN_POS, MAX_POS);
 
-            //leftyLoosy.setPosition(pos);
-            //rightyTighty.setPosition(pos);
+            leftyLoosy.setPosition(pos);
+            rightyTighty.setPosition(pos);
 
             telemetry.addData("Turret Target", targetAngle);
             telemetry.addData("Turret Angle", currentAngle);

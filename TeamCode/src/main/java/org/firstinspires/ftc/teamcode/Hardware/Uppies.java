@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Hardware;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -8,6 +9,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
+@Disabled
 
 /**
      * The {@link #telemetry} field contains an object in which a user may accumulate data which
@@ -19,9 +21,9 @@ public class Uppies extends BaseHardware{
     public HardwareMap hardwareMap = null;// will be set in Child class
 
     public Mode CurrentMode;
-    public CRServo USC;
+    //public CRServo USC;
     public boolean UP = false;
-    public CRServo USCC;
+    //public CRServo USCC;
 
 public static final double UpUSCC = -1;
 public static final double DownUSCC = 1;
@@ -50,8 +52,8 @@ public static final double DownUSCC = 1;
     public void init() {
 
 
-        USCC = hardwareMap.get(CRServo.class, "USCC");
-        USC = hardwareMap.get(CRServo.class, "USC");
+        //USCC = hardwareMap.get(CRServo.class, "USCC");
+        //USC = hardwareMap.get(CRServo.class, "USC");
 
     }
 
@@ -98,15 +100,15 @@ public static final double DownUSCC = 1;
 
     public void cmdUp(){
         CurrentMode = Mode.UP;
-        USC.setPower(UpUSC);
-        USCC.setPower(UpUSCC);
+        //USC.setPower(UpUSC);
+        //USCC.setPower(UpUSCC);
         UP = true;
     }
 
     public void cmdDown(){
         CurrentMode = Mode.DOWN;
-        USC.setPower(DownUSC);
-        USCC.setPower(DownUSCC);
+        //USC.setPower(DownUSC);
+        //USCC.setPower(DownUSCC);
         UP = false;
 
     }
@@ -115,8 +117,8 @@ public static final double DownUSCC = 1;
 
     public void cmdStop(){
         CurrentMode = Mode.STOP;
-        USC.setPower(Stop);
-        USCC.setPower(Stop);
+        //USC.setPower(Stop);
+        //USCC.setPower(Stop);
 
     }
 
