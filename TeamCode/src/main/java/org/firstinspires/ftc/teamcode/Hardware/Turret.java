@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Hardware;
 
 import static java.lang.Math.clamp;
 
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
@@ -48,6 +47,8 @@ public class Turret extends BaseHardware {
     public TrapezoidAutoAim trapezoidAutoAim;
     public HardwareMap hardwareMap = null;
 
+    public Limey limey = null;              // MJD
+
     private boolean driverOverride = false;              // MJD
     private ElapsedTime overrideTimer = new ElapsedTime(); // MJD
 
@@ -61,6 +62,7 @@ public class Turret extends BaseHardware {
     private double clampToHardLimits(double angle) {
         return clamp(angle, MIN_DEG, MAX_DEG);
     }
+
     // Soft limit helpers — MJD
     public void updateSoftLimits(double robotHeadingDeg) {
         //Soft limit logic — tune later
@@ -72,9 +74,11 @@ public class Turret extends BaseHardware {
             softMaxDeg = MAX_DEG;
         }
     }
+
     private double clampToSoftLimits(double angle) {
         return clamp(angle, softMinDeg, softMaxDeg);
     }
+
     // Safe angle validation — MJD
     public boolean isSafeAngle(double angle) {
         if (angle < softMinDeg || angle > softMaxDeg) return false;
@@ -92,30 +96,38 @@ public class Turret extends BaseHardware {
     }
 
     @Override
-    public void init_loop() {
-
-    }
+    public void init_loop() { }
 
     @Override
-    public void start() {
-
-    }
+    public void start() { }
 
     @Override
     public void loop() {
 
+        // --- MJD: derive currentAngle from servo position ---
+        double posRead = leftyLoosy.getPosition();   // assume left is primary
+        currentAngle = MIN_DEG + posRead * (MAX_DEG - MIN_DEG);
+        currentAngle = clamp(currentAngle, MIN_DEG, MAX_DEG);
 
+        // --- DRIVER OVERRIDE LOGIC — external control via setDriverOverride/manualControl ---
 
-        // DRIVER OVERRIDE LOGIC — MJD
+        if (!driverOverride) {
+            // --- AUTO-AIM USING LIMELIGHT / LIMEY — MJD ---
+            if (limey != null && limey.getTagID() != -1) {
+                // Use tx (horizontal offset in degrees) to adjust turret
+                double tx = limey.getTx();   // positive = target to the right
+                double desired = currentAngle + tx;   // simple relative aim
 
-        double stick = 0; // Replace with joystick input when integrated — MJD
+                desired = clampToHardLimits(desired);
+                desired = clampToSoftLimits(desired);
 
-        if (Math.abs(stick) > 0.6) {     // driver touching stick
-            driverOverride = true;
-            overrideTimer.reset();
-        } else if (driverOverride && overrideTimer.seconds() > 0.5) {
-            driverOverride = false;
+                if (isSafeAngle(desired)) {
+                    targetAngle = desired;
+                }
+            }
+            // else: no tag → hold last targetAngle
         }
+
         // --- PID CALCULATION ---
         if (!driverOverride) {   //only run PID when NOT overridden
 
@@ -144,8 +156,9 @@ public class Turret extends BaseHardware {
             double pos = (currentAngle - MIN_DEG) / (MAX_DEG - MIN_DEG);
             pos = clamp(pos, MIN_POS, MAX_POS);
 
+            // MJD — dual-servo mapping: one reversed
             leftyLoosy.setPosition(pos);
-            rightyTighty.setPosition(pos);
+            rightyTighty.setPosition(1.0 - pos);
 
             telemetry.addData("Turret Target", targetAngle);
             telemetry.addData("Turret Angle", currentAngle);
@@ -159,22 +172,10 @@ public class Turret extends BaseHardware {
     }
 
     @Override
-    void stop() {
-
-    }
+    void stop() { }
 
     /*
-    public void cmdCRLeft(){
-        if(trapezoidAutoAim.runtime.milliseconds() <= milliDeg) {
-            rightyTighty.setPosition(0.25);
-            leftyLoosy.setPosition(0.25);
-            currentPosition = currentPosition + 1;
-            trapezoidAutoAim.runtime.reset();
-        }
-    }
-
-     */
-
+    // OLD incremental commands — these bypass PID and are not safe with new control
     public void cmdLeft() {
         rightyTighty.setPosition(rightyTighty.getPosition() + 0.002778); //maybe 0.000926
         leftyLoosy.setPosition(leftyLoosy.getPosition() - 0.002778);
@@ -209,13 +210,11 @@ public class Turret extends BaseHardware {
             currentPosition = currentPosition - (turretSpeed * 4.0);
             rightyTighty.setPosition(turretSpeed);
             leftyLoosy.setPosition(-turretSpeed);
-           // cmdTurn(targetPosition, turretSpeed); // turret speed - 0.25 so slows down as gets closer to target
         }else if(targetPosition < currentPosition){
          driverOverride = true;
             currentPosition = currentPosition + (turretSpeed * 4.0);
             rightyTighty.setPosition(-turretSpeed);
             leftyLoosy.setPosition(turretSpeed);
-           // cmdTurn(targetPosition, turretSpeed);
         }else{
             cmdNo();
         }
@@ -235,25 +234,33 @@ public class Turret extends BaseHardware {
         }
     }
 
-
-
-
-
-
-
     public void cmdNo() {
         rightyTighty.setPosition(0);
         leftyLoosy.setPosition(0);
         trapezoidAutoAim.runtime.reset();
     }
-    public void manualControl(double stick) {
+    */
+
+    // --- DRIVER OVERRIDE API — call from TeleOp --- // MJD
+    public void manualControl(double stick) {   // MJD
         double speedDegPerLoop = 3.0;
         double newAngle = currentAngle + (stick * speedDegPerLoop);
 
-        newAngle = clamp(newAngle, MIN_DEG, MAX_DEG);
+        newAngle = clampToHardLimits(newAngle);
+        newAngle = clampToSoftLimits(newAngle);
 
-        setTargetAngle(newAngle);
+        if (isSafeAngle(newAngle)) {
+            targetAngle = newAngle;
+        }
     }
+
+    public void setDriverOverride(boolean override) {   // MJD
+        if (override && !driverOverride) {
+            overrideTimer.reset();
+        }
+        driverOverride = override;
+    }
+
     public void setTargetAngle(double angle) {   // MJD
         angle = clampToHardLimits(angle);        // MJD
         angle = clampToSoftLimits(angle);        // MJD
@@ -262,9 +269,11 @@ public class Turret extends BaseHardware {
             targetAngle = angle;
         }
     }
+
     public double getCurrentAngle() {
         return currentAngle;
     }
+
     private double clamp(double v, double min, double max) {
         return Math.max(min, Math.min(max, v));
     }
