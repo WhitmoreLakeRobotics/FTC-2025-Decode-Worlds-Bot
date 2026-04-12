@@ -185,7 +185,7 @@ public class Robot extends BaseHardware {
         uppies.loop();
         autoRPM.loop();
         turret.loop();
-        autoAim.start();
+        autoAim.loop();
         trapezoidAutoAim.loop();
         lighting.loop();
         setIntakeLighting(); //naj moved the code to this method to de-clutter the code
