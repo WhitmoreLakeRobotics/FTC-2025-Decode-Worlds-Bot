@@ -132,8 +132,7 @@ public class ppTeleop extends OpMode {
         // Reverse the motor that runs backwards when connected directly to the battery
 
         follower = CompBotConstants.createFollower(hardwareMap);
-        //follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
-        follower.setStartingPose(new Pose(0,0,0));
+        follower.setStartingPose(startingPose == null ? new Pose() : startingPose);
         follower.update();
 
     }
@@ -156,6 +155,7 @@ public class ppTeleop extends OpMode {
         Runtime.getRuntime();
         //Gameruntime.reset();           <<<<<<<< lights
         //Gameruntime2.reset();              <<<<<<<<<<
+        //follower.startTeleopDrive(); //naj added to start the method
 
     }
 
@@ -170,7 +170,6 @@ public class ppTeleop extends OpMode {
         follower.update();
         robot.loop();
         write2Log();
-        robot.autoRPM.update();
         tHeading = getTurnDirection();
         if (Math.abs(gamepad1.right_stick_x) > 0.04) {
             bAutoTurn = false;
@@ -242,7 +241,7 @@ public class ppTeleop extends OpMode {
                     CommonLogic.joyStickMath(gamepad1.right_stick_y), //naj added joystick math
                     CommonLogic.joyStickMath(-gamepad1.right_stick_x),
                     CommonLogic.joyStickMath(gamepad1.left_stick_y),
-                    true,
+                    false,
                     0
 
             );
@@ -423,7 +422,12 @@ public class ppTeleop extends OpMode {
         }
 
         if (CommonLogic.oneShot(gamepad2.dpad_down, gp2_prev_dpad_down)) {
-           robot.autoRPM.Measure = !robot.autoRPM.Measure;
+            if(robot.autoRPM.Measure){
+                robot.autoRPM.Measure = true;
+            }
+            else{
+                robot.autoRPM.Measure = false;
+            }
         }
 
         if (CommonLogic.oneShot(gamepad2.dpad_right, gp2_prev_dpad_right)) {
