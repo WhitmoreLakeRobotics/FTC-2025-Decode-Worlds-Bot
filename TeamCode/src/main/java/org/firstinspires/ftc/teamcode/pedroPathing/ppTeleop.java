@@ -155,7 +155,7 @@ public class ppTeleop extends OpMode {
         Runtime.getRuntime();
         //Gameruntime.reset();           <<<<<<<< lights
         //Gameruntime2.reset();              <<<<<<<<<<
-        follower.startTeleopDrive(); //naj added to start the method
+        //follower.startTeleopDrive(); //naj added to start the method
 
     }
 
@@ -238,8 +238,8 @@ public class ppTeleop extends OpMode {
                 follower.setMaxPower(NormalSpeed);
             }
             follower.setTeleOpDrive(
-                    CommonLogic.joyStickMath(gamepad1.right_stick_x), //naj added joystick math
-                    CommonLogic.joyStickMath(-gamepad1.right_stick_y),
+                    CommonLogic.joyStickMath(gamepad1.right_stick_y), //naj added joystick math
+                    CommonLogic.joyStickMath(-gamepad1.right_stick_x),
                     CommonLogic.joyStickMath(gamepad1.left_stick_y),
                     false,
                     0
