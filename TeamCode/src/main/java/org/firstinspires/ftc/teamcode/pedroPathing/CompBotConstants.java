@@ -46,7 +46,7 @@ public class CompBotConstants { public static FollowerConstants followerConstant
             .hardwareMapName("otto")
             .linearUnit(DistanceUnit.INCH)
             .angleUnit(AngleUnit.RADIANS)
-            .offset(new SparkFunOTOS.Pose2D(-5.5, -2.0, 0)) //update this
+            .offset(new SparkFunOTOS.Pose2D(-5.5, 0, 0)) //update this
 //            .offset(myOffset) 2.25 5.5
             .linearScalar(1.1211) //Multiplier
             .angularScalar(0.9915) ;//Multiplier

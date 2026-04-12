@@ -238,9 +238,9 @@ public class ppTeleop extends OpMode {
                 follower.setMaxPower(NormalSpeed);
             }
             follower.setTeleOpDrive(
-                    CommonLogic.joyStickMath(gamepad1.right_stick_x), //naj added joystick math
-                    CommonLogic.joyStickMath(-gamepad1.right_stick_y),
-                    CommonLogic.joyStickMath(gamepad1.left_stick_y),
+                    CommonLogic.joyStickMath(gamepad1.left_stick_y), //naj added joystick math
+                    CommonLogic.joyStickMath(gamepad1.left_stick_x),//add negative numbers + if still off, adjust + change offset heading
+                    CommonLogic.joyStickMath(gamepad1.right_stick_x),
                     false,
                     0
 
@@ -254,15 +254,24 @@ public class ppTeleop extends OpMode {
         //***********   Pushers
         //if (CommonLogic.oneShot(gamepad1.a, gp1_prev_a)) {
         if (gamepad1.a) {
-
+            tHeading = 90;
         }
 
         if (gamepad1.b) {
-
+            tHeading = 0;
         }
+
+        if (gamepad1.x) {
+            tHeading = 180;
+        }
+
+        if (gamepad1.y) {
+            tHeading = -90;
+        }
+
         if (CommonLogic.oneShot(gamepad1.back, gp1_prev_back)) {
             //Initialize Gyro
-            //robot.driveTrain.ResetGyro();
+            robot.driveTrain.ResetGyro();
             follower.setStartingPose(follower.getPose());
             tHeading = 0;
         }
