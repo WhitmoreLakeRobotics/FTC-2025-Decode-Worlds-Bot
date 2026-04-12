@@ -261,25 +261,24 @@ public void stop(){
 
 }
 
-public void cmdPlate(){
-    int red1 = Plate.red();
-    int green1 = Plate.green();
-    int blue1 = Plate.blue();
+    public void cmdPlate() {
+        int r = Plate.red();
+        int g = Plate.green();
+        int b = Plate.blue();
 
-    if ((CommonLogic.inRange(red1,TargetType.REDT.red,TargetType.REDT.redTol ))
-            &&(CommonLogic.inRange(blue1,TargetType.REDT.blue,TargetType.REDT.blueTol ))
-            &&(CommonLogic.inRange(green1,TargetType.REDT.green,TargetType.REDT.greenTol))
-    ){
-        CurrentTargetType = TargetType.REDT;
-    }else if ((CommonLogic.inRange(red1,TargetType.BLUET.red,TargetType.BLUET.redTol ))
-            &&(CommonLogic.inRange(blue1,TargetType.BLUET.blue,TargetType.BLUET.blueTol ))
-            &&(CommonLogic.inRange(green1,TargetType.BLUET.green,TargetType.BLUET.greenTol))
-    ){
-        CurrentTargetType = TargetType.BLUET;
-    }else {
-        CurrentTargetType = TargetType.UNKNOWNT;
+        // Detect RED plate
+        if (r > b + 20 && r > g + 20) {
+            CurrentTargetType = TargetType.REDT;
+        }
+        // Detect BLUE plate
+        else if (b > r + 20 && b > g + 20) {
+            CurrentTargetType = TargetType.BLUET;
+        }
+        else {
+            CurrentTargetType = TargetType.UNKNOWNT;
+        }
     }
-}
+
 
 public TargetType getSlotArtifact(ColorSensor v3) {
     int red1 = v3.red();
