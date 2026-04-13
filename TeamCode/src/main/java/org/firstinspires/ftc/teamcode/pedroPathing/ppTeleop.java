@@ -39,7 +39,7 @@ public class ppTeleop extends OpMode {
 
     private static final String TAGTeleop = "8492-Teleop";
     //RobotTest robot = new RobotTest();
-    Robot robot = new Robot();
+    Robot robot;
     //    // Declare OpMode members.
     private boolean gp1_prev_a = false;
     private boolean gp1_prev_b = false;
@@ -115,6 +115,7 @@ public class ppTeleop extends OpMode {
 
         telemetry.addData("Tele_Op", "Initialized");
 
+        robot = new Robot();
         robot.hardwareMap = hardwareMap;
         robot.telemetry = telemetry;
         //robot.driveTrain.setMaxPower(DriveTrain.DRIVETRAIN_NORMALSPEED);
@@ -155,6 +156,7 @@ public class ppTeleop extends OpMode {
         //Gameruntime.reset();           <<<<<<<< lights
         //Gameruntime2.reset();              <<<<<<<<<<
         follower.startTeleopDrive(); //naj added to start the method
+
     }
 
     //*********************************************************************************************
@@ -163,6 +165,8 @@ public class ppTeleop extends OpMode {
 
     @Override
     public void loop() {
+        if (robot == null) return;
+        if (robot.limey == null) return;
         follower.update();
         robot.loop();
         write2Log();
@@ -187,7 +191,7 @@ public class ppTeleop extends OpMode {
                  */
 
               //  follower.turnTo(tHeading);
-                follower.turnToDegrees(tHeading);
+                follower.turnTo(Math.toRadians(tHeading));
 
             } else if (gamepad1.left_bumper) {
                /* robot.driveTrain.cmdTeleOp(CommonLogic.joyStickMath(gamepad1.left_stick_y * -1),
@@ -195,7 +199,7 @@ public class ppTeleop extends OpMode {
                         robot.driveTrain.autoTurn(tHeading), robot.driveTrain.DTrain_SLOWSPEED);
 
                 */
-                follower.turnToDegrees(tHeading);
+                follower.turnTo(Math.toRadians(tHeading));
                 follower.setMaxPower(SnailSpeed);
             } else {
 
@@ -204,7 +208,7 @@ public class ppTeleop extends OpMode {
                         robot.driveTrain.autoTurn(tHeading), robot.driveTrain.DTrain_NORMALSPEED);
 
                 */
-                follower.turnToDegrees(tHeading);
+                follower.turnTo(Math.toRadians(tHeading));
                 follower.setMaxPower(NormalSpeed);
             }
         } else {
@@ -234,10 +238,11 @@ public class ppTeleop extends OpMode {
                 follower.setMaxPower(NormalSpeed);
             }
             follower.setTeleOpDrive(
-                    CommonLogic.joyStickMath(gamepad1.left_stick_y * -1), //naj added joystick math
-                    CommonLogic.joyStickMath(gamepad1.left_stick_x * -1),
-                    CommonLogic.joyStickMath(gamepad1.right_stick_x * -1),
-                    false
+                    CommonLogic.joyStickMath(gamepad1.left_stick_y), //naj added joystick math
+                    CommonLogic.joyStickMath(gamepad1.left_stick_x),//add negative numbers + if still off, adjust + change offset heading
+                    CommonLogic.joyStickMath(gamepad1.right_stick_x),
+                    false,
+                    0
 
             );
         }
@@ -249,15 +254,25 @@ public class ppTeleop extends OpMode {
         //***********   Pushers
         //if (CommonLogic.oneShot(gamepad1.a, gp1_prev_a)) {
         if (gamepad1.a) {
-
+            tHeading = 90;
         }
 
         if (gamepad1.b) {
-
+            tHeading = 0;
         }
+
+        if (gamepad1.x) {
+            tHeading = 180;
+        }
+
+        if (gamepad1.y) {
+            tHeading = -90;
+        }
+
         if (CommonLogic.oneShot(gamepad1.back, gp1_prev_back)) {
             //Initialize Gyro
             robot.driveTrain.ResetGyro();
+            follower.setStartingPose(follower.getPose());
             tHeading = 0;
         }
 
@@ -328,7 +343,7 @@ public class ppTeleop extends OpMode {
         //***********   Gamepad 2 controls ********
 
         // Bumpers close and open the gripper
-        if (( gamepad2.left_bumper == true)) {
+        if (( gamepad2.left_bumper)) {
 
             LaunchTelleTouch();
 
@@ -338,7 +353,7 @@ public class ppTeleop extends OpMode {
 
 
         }
-        if (gamepad2.right_bumper == true) {
+        if (gamepad2.right_bumper) {
             LaunchNear();
         }
 
@@ -416,6 +431,12 @@ public class ppTeleop extends OpMode {
         }
 
         if (CommonLogic.oneShot(gamepad2.dpad_down, gp2_prev_dpad_down)) {
+            if(robot.autoRPM.Measure){
+                robot.autoRPM.Measure = true;
+            }
+            else{
+                robot.autoRPM.Measure = false;
+            }
         }
 
         if (CommonLogic.oneShot(gamepad2.dpad_right, gp2_prev_dpad_right)) {

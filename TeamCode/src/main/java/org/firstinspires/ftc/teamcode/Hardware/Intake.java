@@ -25,10 +25,10 @@ public class Intake extends BaseHardware {
     public static final double inSpeed = -1;
     public static final double outSpeed = 0.65;
     public static final double autoSpeed = -1.0;
-    private double gearRatio = 1.0 / 3.61;
-    private double ticksPerRevolution = 28;
-    private double pulleyRatio = 24.0 / 15.0; // 2.0 / 1.0 for transitional
-    private double totalRatio = gearRatio * pulleyRatio;
+    //private double gearRatio = 1.0 / 3.61;
+    //private double ticksPerRevolution = 28;
+    //private double pulleyRatio = 24.0 / 15.0; // 2.0 / 1.0 for transitional
+    //private double totalRatio = gearRatio * pulleyRatio;
 
     //private ElapsedTime loopTime = new ElapsedTime();
     private final double targRange = 6;
@@ -102,11 +102,19 @@ public class Intake extends BaseHardware {
 
     public enum Mode { NTKstop, NTKforward, NTKautoIn, NTKbackward }
 
-    public double getIntakeRPM() {
+    public double getMotorRPM(DcMotorEx motor){
+        double ticksPerRevolution = 28;
+        double ticksPerSecond = motor.getVelocity();
+        return (ticksPerSecond / ticksPerRevolution) * 60;
+    }
+
+    /*public double getIntakeRPM() {
         double ticksPerSecond = NTKM01.getVelocity();
         double motorRPM = (ticksPerSecond / ticksPerRevolution) * 60;
         return motorRPM * totalRatio;
     }
+    /*
+         */
 
     public void setIntakeFull(boolean bStatus){
         IntakeFull = bStatus;

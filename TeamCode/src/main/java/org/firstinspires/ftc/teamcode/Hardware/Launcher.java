@@ -102,12 +102,12 @@ public class Launcher extends BaseHardware{
     @Override
     public void init() {
 
-        Pikachu = hardwareMap.get(VoltageSensor.class, "Expansion Hub 3");
+        Pikachu = hardwareMap.get(VoltageSensor.class, "Expansion Hub 2");
 
         LaunchM02 = hardwareMap.get(DcMotorEx.class, "LaunchM02");
         LaunchM01 = hardwareMap.get(DcMotorEx.class, "LaunchM01");
 
-        LaunchM01.setDirection(DcMotorSimple.Direction.REVERSE);
+        LaunchM01.setDirection(DcMotorSimple.Direction.FORWARD);
         LaunchM02.setDirection(DcMotorSimple.Direction.REVERSE);
 
         telemetryMU = PanelsTelemetry.INSTANCE.getTelemetry();

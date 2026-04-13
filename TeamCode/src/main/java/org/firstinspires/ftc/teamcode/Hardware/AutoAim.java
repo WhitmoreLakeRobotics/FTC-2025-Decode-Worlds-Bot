@@ -3,12 +3,11 @@ package org.firstinspires.ftc.teamcode.Hardware;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@Disabled
 public class AutoAim extends BaseHardware{ // naj added this to comply with standard baseHardware class
 
-    private Limey limey;
-    private Robot robot;
-    private Turret turret;
+    public Limey limey;
+    public Robot robot;
+    public Turret turret;
     private DriveTrain driveTrain;
 
     // Distance behind the tag to aim at
@@ -36,6 +35,10 @@ public class AutoAim extends BaseHardware{ // naj added this to comply with stan
      * Returns: turret-relative angle (degrees) to command.
      */
     public double computeAimAngle() {   // MJD
+
+        if (robot == null || robot.limey == null){
+            return Double.NaN;
+        }
 
         // Must see april tag
         if (robot.limey.getTagID() == -1) return Double.NaN;   // MJD

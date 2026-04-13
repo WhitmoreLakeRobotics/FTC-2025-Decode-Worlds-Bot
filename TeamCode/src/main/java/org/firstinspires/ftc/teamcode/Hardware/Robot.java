@@ -59,6 +59,13 @@ public class Robot extends BaseHardware {
     @Override
     public void init() {
 
+
+        limey = new Limey();
+        limey.hardwareMap = this.hardwareMap;
+        limey.telemetry = this.telemetry;
+        limey.setTelemetry(telemetry);
+        limey.init();
+
         driveTrain = new DriveTrain();
         driveTrain.hardwareMap = this.hardwareMap;
         driveTrain.telemetry = this.telemetry;
@@ -83,12 +90,6 @@ public class Robot extends BaseHardware {
         transitionRoller.hardwareMap = this.hardwareMap;
         transitionRoller.telemetry = this.telemetry;
         transitionRoller.init();
-
-        limey = new Limey();
-        limey.hardwareMap = this.hardwareMap;
-        limey.telemetry = this.telemetry;
-        limey.setTelemetry(telemetry);
-        limey.init();
 
         uppies = new Uppies();
         uppies.hardwareMap = this.hardwareMap;
@@ -118,17 +119,23 @@ public class Robot extends BaseHardware {
         autoAim = new AutoAim();  //limey, turret, driveTrain  now removed;
         autoAim.hardwareMap = this.hardwareMap;
         autoAim.telemetry = this.telemetry;
+        autoAim.robot = this;
+        autoAim.limey = this.limey;
+        autoAim.turret = this.turret;
         autoAim.init();
 
         trapezoidAutoAim = new TrapezoidAutoAim();
         trapezoidAutoAim.hardwareMap = this.hardwareMap;
         trapezoidAutoAim.telemetry = this.telemetry;
+        trapezoidAutoAim.robot = this;
+        trapezoidAutoAim.limey = this.limey;
         trapezoidAutoAim.init();
     }
 
     @Override
     public void init_loop() {
         driveTrain.init_loop();
+        limey.init_loop();
         autoAim.init_loop();
         //lighting.init_loop();
         // sensors.init_loop();
@@ -137,7 +144,6 @@ public class Robot extends BaseHardware {
         launcher.init_loop();
         launcherBlocker.init_loop();
         transitionRoller.init_loop();
-        limey.init_loop();
         uppies.init_loop();
         autoRPM.init_loop();
         turret.init_loop();
@@ -148,6 +154,7 @@ public class Robot extends BaseHardware {
     @Override
     public void start() {
         driveTrain.start();
+        limey.start();
         // lighting.start();
         // sensors.start();
         sensors.start();
@@ -155,8 +162,7 @@ public class Robot extends BaseHardware {
         launcher.start();
         launcherBlocker.start();
         transitionRoller.start();
-        limey.start();
-        uppies.start();
+        //uppies.start();
         autoRPM.start();
         turret.start();
         autoAim.start();
@@ -170,12 +176,12 @@ public class Robot extends BaseHardware {
     public void loop() {
       //  driveTrain.loop();
         //. lighting.loop();
+        limey.loop();
         sensors.loop();
         intake.loop();
         launcher.loop();
         launcherBlocker.loop();
         transitionRoller.loop();
-        limey.loop();
         uppies.loop();
         autoRPM.loop();
         turret.loop();
@@ -192,13 +198,13 @@ public class Robot extends BaseHardware {
     public void autonLoop() {
         //driveTrain.loop();
         //. lighting.loop();
+        limey.loop();
         sensors.loop();
         intake.loop();
         launcher.loop();
         launcherBlocker.loop();
         autoAim.loop();
         transitionRoller.loop();
-        limey.loop();
         uppies.loop();
         lighting.loop();
         setIntakeLighting();

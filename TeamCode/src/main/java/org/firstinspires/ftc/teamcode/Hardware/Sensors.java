@@ -27,7 +27,7 @@ public class Sensors extends BaseHardware {
     //private ColorRangeSensor IntakeSensor;
     //private DistanceSensor RearLeftSensor
 public RevColorSensorV3 NTKAP3;
-    public ColorRangeSensor NTKAP1;
+   // public ColorRangeSensor NTKAP1;
     public ColorRangeSensor NTKAP2;
     public ColorRangeSensor Plate;
     public boolean allFilled = false;
@@ -78,7 +78,7 @@ public RevColorSensorV3 NTKAP3;
 
         NTKAP3 = hardwareMap.get(RevColorSensorV3.class, "NTKAP3");
         NTKAP2 = hardwareMap.get(ColorRangeSensor.class, "NTKAP2");
-        NTKAP1 = hardwareMap.get(RevColorSensorV3.class, "NTKAP1");
+        //NTKAP1 = hardwareMap.get(RevColorSensorV3.class, "NTKAP1");
         Plate = hardwareMap.get(RevColorSensorV3.class,"Plate");
         sensorTime.reset();
 
@@ -141,7 +141,7 @@ public RevColorSensorV3 NTKAP3;
      * This method will be called repeatedly in a loop while this op mode is running
      */
     public void loop(){
-        //cmdPlate();
+        cmdPlate();
 
         if(CurrentDistance1 == Distance1.MISSING1 && CurrentDistance2 == Distance2.MISSING2 &&
                 CurrentDistance3 == Distance3.MISSING3){
@@ -156,12 +156,12 @@ public RevColorSensorV3 NTKAP3;
             sensorStable = false;
         }
 
-        telemetry.addData("Red",NTKAP1.red());
-        telemetry.addData("Blue",NTKAP1.blue());
-        telemetry.addData("Green",NTKAP1.green());
+        telemetry.addData("Red",NTKAP2.red());
+        telemetry.addData("Blue",NTKAP2.blue());
+        telemetry.addData("Green",NTKAP2.green());
         telemetry.addData("Plate",CurrentTargetType);
 
-        getDistNTKAP1();
+        //getDistNTKAP1();
         getDistNTKAP2();
         getDistNTKAP3();
 /*
@@ -261,25 +261,24 @@ public void stop(){
 
 }
 
-public void cmdPlate(){
-    int red1 = NTKAP1.red();
-    int green1 = NTKAP1.green();
-    int blue1 = NTKAP1.blue();
+    public void cmdPlate() {
+        int r = Plate.red();
+        int g = Plate.green();
+        int b = Plate.blue();
 
-    if ((CommonLogic.inRange(red1,TargetType.REDT.red,TargetType.REDT.redTol ))
-            &&(CommonLogic.inRange(blue1,TargetType.REDT.blue,TargetType.REDT.blueTol ))
-            &&(CommonLogic.inRange(green1,TargetType.REDT.green,TargetType.REDT.greenTol))
-    ){
-        CurrentTargetType = TargetType.REDT;
-    }else if ((CommonLogic.inRange(red1,TargetType.BLUET.red,TargetType.BLUET.redTol ))
-            &&(CommonLogic.inRange(blue1,TargetType.BLUET.blue,TargetType.BLUET.blueTol ))
-            &&(CommonLogic.inRange(green1,TargetType.BLUET.green,TargetType.BLUET.greenTol))
-    ){
-        CurrentTargetType = TargetType.BLUET;
-    }else {
-        CurrentTargetType = TargetType.UNKNOWNT;
+        // Detect RED plate
+        if (r > b + 20 && r > g + 20) {
+            CurrentTargetType = TargetType.REDT;
+        }
+        // Detect BLUE plate
+        else if (b > r + 20 && b > g + 20) {
+            CurrentTargetType = TargetType.BLUET;
+        }
+        else {
+            CurrentTargetType = TargetType.UNKNOWNT;
+        }
     }
-}
+
 
 public TargetType getSlotArtifact(ColorSensor v3) {
     int red1 = v3.red();
@@ -301,9 +300,9 @@ public TargetType getSlotArtifact(ColorSensor v3) {
     }
 
 }
-    private void getDistNTKAP1() {
-        NTKAP1distance = NTKAP1.getDistance(DistanceUnit.CM);
-    }
+    //private void getDistNTKAP1() {
+        //NTKAP1distance = NTKAP1.getDistance(DistanceUnit.CM);
+    //}
 
     private void getDistNTKAP2() {
         NTKAP2distance = NTKAP2.getDistance(DistanceUnit.CM);
