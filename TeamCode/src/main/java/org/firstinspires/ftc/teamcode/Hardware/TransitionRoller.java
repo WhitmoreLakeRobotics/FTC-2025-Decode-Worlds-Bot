@@ -40,7 +40,7 @@ public class TransitionRoller extends BaseHardware{
     public final double maxPower = 1.0;
 
     public static final double TRserSpeed = -1.0;
-    public static final double TRSpeed = 0.85;   //change back later
+    public static final double TRSpeed = 0.90;   //change back later
     public static final double stopSpeed = 0.0;
      static final double TRBack = 0.5;
     private ElapsedTime runtime = new ElapsedTime();
